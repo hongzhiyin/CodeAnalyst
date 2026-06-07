@@ -1,0 +1,75 @@
+{
+  "root": "/Users/chihoyo/Project/CodebaseUnderstanding",
+  "file_count_scanned": 24,
+  "truncated": false,
+  "project_types": [
+    "Codex skill",
+    "Python project"
+  ],
+  "manifests": [
+    "AGENTS.md",
+    "pyproject.toml",
+    "skill/SKILL.md"
+  ],
+  "entrypoint_candidates": [
+    "skill/SKILL.md",
+    "src/codebase_understanding/cli.py"
+  ],
+  "top_directories": {
+    "AGENTS.md": 1,
+    "docs/": 4,
+    "index.md": 1,
+    "pyproject.toml": 1,
+    "scripts/": 3,
+    "skill/": 2,
+    "src/": 7,
+    "tests/": 5
+  },
+  "extensions": {
+    ".py": 12,
+    ".md": 8,
+    ".sh": 3,
+    ".toml": 1
+  },
+  "tree_depth": 3,
+  "tree": {
+    "AGENTS.md": {},
+    "index.md": {},
+    "pyproject.toml": {},
+    "docs": {
+      "ARCHITECTURE.md": {},
+      "DECISIONS.md": {},
+      "ROADMAP.md": {},
+      "SPEC.md": {}
+    },
+    "scripts": {
+      "check_install.sh": {},
+      "install_cli.sh": {},
+      "sync_skill.sh": {}
+    },
+    "skill": {
+      "SKILL.md": {},
+      "references": {
+        "quick-learning-framework.md": {}
+      }
+    },
+    "src": {
+      "codebase_understanding": {
+        "__init__.py": {},
+        "cli.py": {},
+        "import_graph.py": {},
+        "inventory.py": {},
+        "pack.py": {},
+        "render_site.py": {},
+        "vibe_audit.py": {}
+      }
+    },
+    "tests": {
+      "test_import_graph.py": {},
+      "test_inventory.py": {},
+      "test_pack.py": {},
+      "test_render_site.py": {},
+      "test_vibe_audit.py": {}
+    }
+  }
+}

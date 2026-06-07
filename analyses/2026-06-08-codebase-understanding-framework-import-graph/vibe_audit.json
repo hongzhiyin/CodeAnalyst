@@ -1,0 +1,11 @@
+{
+  "target": "/Users/chihoyo/Project/CodebaseUnderstanding",
+  "file_count_scanned": 24,
+  "truncated": false,
+  "summary": {
+    "finding_count": 0,
+    "severity_counts": {},
+    "category_counts": {}
+  },
+  "findings": []
+}

@@ -1,0 +1,443 @@
+{
+  "title": "CodebaseUnderstanding 快速学习图",
+  "summary": "入口、配置、顶层目录和 vibe-audit 风险的第一版结构图。",
+  "locale": "zh-CN",
+  "nodes": [
+    {
+      "id": "target",
+      "label": "CodebaseUnderstanding",
+      "kind": "entrypoint",
+      "group": "目标项目",
+      "layer": "Source",
+      "path": ".",
+      "summary": "被分析的项目根目录。"
+    },
+    {
+      "id": "manifest-agents-md",
+      "label": "AGENTS.md",
+      "kind": "config",
+      "group": "Manifests",
+      "layer": "Manifests",
+      "path": "AGENTS.md",
+      "summary": "项目配置或元数据入口。"
+    },
+    {
+      "id": "manifest-pyproject-toml",
+      "label": "pyproject.toml",
+      "kind": "config",
+      "group": "Manifests",
+      "layer": "Manifests",
+      "path": "pyproject.toml",
+      "summary": "项目配置或元数据入口。"
+    },
+    {
+      "id": "manifest-skill-skill-md",
+      "label": "skill/SKILL.md",
+      "kind": "config",
+      "group": "Manifests",
+      "layer": "Manifests",
+      "path": "skill/SKILL.md",
+      "summary": "项目配置或元数据入口。"
+    },
+    {
+      "id": "entry-skill-skill-md",
+      "label": "skill/SKILL.md",
+      "kind": "entrypoint",
+      "group": "Entrypoints",
+      "layer": "Entrypoints",
+      "path": "skill/SKILL.md",
+      "summary": "可能的用户或运行入口。"
+    },
+    {
+      "id": "entry-src-codebase-understanding-cli-py",
+      "label": "src/codebase_understanding/cli.py",
+      "kind": "entrypoint",
+      "group": "Entrypoints",
+      "layer": "Entrypoints",
+      "path": "src/codebase_understanding/cli.py",
+      "summary": "可能的用户或运行入口。"
+    },
+    {
+      "id": "dir-docs",
+      "label": "docs/",
+      "kind": "module",
+      "group": "Top directories",
+      "layer": "Top directories",
+      "path": "docs/",
+      "summary": "顶层目录，扫描到 4 个文件。"
+    },
+    {
+      "id": "dir-scripts",
+      "label": "scripts/",
+      "kind": "module",
+      "group": "Top directories",
+      "layer": "Top directories",
+      "path": "scripts/",
+      "summary": "顶层目录，扫描到 3 个文件。"
+    },
+    {
+      "id": "dir-skill",
+      "label": "skill/",
+      "kind": "module",
+      "group": "Top directories",
+      "layer": "Top directories",
+      "path": "skill/",
+      "summary": "顶层目录，扫描到 2 个文件。"
+    },
+    {
+      "id": "dir-src",
+      "label": "src/",
+      "kind": "module",
+      "group": "Top directories",
+      "layer": "Top directories",
+      "path": "src/",
+      "summary": "顶层目录，扫描到 7 个文件。"
+    },
+    {
+      "id": "dir-tests",
+      "label": "tests/",
+      "kind": "module",
+      "group": "Top directories",
+      "layer": "Top directories",
+      "path": "tests/",
+      "summary": "顶层目录，扫描到 5 个文件。"
+    },
+    {
+      "id": "vibe-audit",
+      "label": "vibe-audit",
+      "kind": "test",
+      "group": "Checks",
+      "layer": "Checks",
+      "path": "vibe_audit.json",
+      "summary": "发现 0 条可能的生成遗留或验证风险。"
+    },
+    {
+      "id": "file-src-codebase-understanding-cli-py",
+      "label": "src/codebase_understanding/cli.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "src/codebase_understanding/cli.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-src-codebase-understanding-init-py",
+      "label": "src/codebase_understanding/__init__.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "src/codebase_understanding/__init__.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-src-codebase-understanding-import-graph-py",
+      "label": "src/codebase_understanding/import_graph.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "src/codebase_understanding/import_graph.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-src-codebase-understanding-inventory-py",
+      "label": "src/codebase_understanding/inventory.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "src/codebase_understanding/inventory.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-src-codebase-understanding-pack-py",
+      "label": "src/codebase_understanding/pack.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "src/codebase_understanding/pack.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-src-codebase-understanding-render-site-py",
+      "label": "src/codebase_understanding/render_site.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "src/codebase_understanding/render_site.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-src-codebase-understanding-vibe-audit-py",
+      "label": "src/codebase_understanding/vibe_audit.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "src/codebase_understanding/vibe_audit.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-tests-test-import-graph-py",
+      "label": "tests/test_import_graph.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "tests/test_import_graph.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-tests-test-inventory-py",
+      "label": "tests/test_inventory.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "tests/test_inventory.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-tests-test-pack-py",
+      "label": "tests/test_pack.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "tests/test_pack.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-tests-test-render-site-py",
+      "label": "tests/test_render_site.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "tests/test_render_site.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-tests-test-vibe-audit-py",
+      "label": "tests/test_vibe_audit.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "tests/test_vibe_audit.py",
+      "summary": "由 import graph 发现的源码文件。"
+    }
+  ],
+  "edges": [
+    {
+      "from": "target",
+      "to": "manifest-agents-md",
+      "label": "contains",
+      "kind": "contains"
+    },
+    {
+      "from": "target",
+      "to": "manifest-pyproject-toml",
+      "label": "contains",
+      "kind": "contains"
+    },
+    {
+      "from": "target",
+      "to": "manifest-skill-skill-md",
+      "label": "contains",
+      "kind": "contains"
+    },
+    {
+      "from": "target",
+      "to": "entry-skill-skill-md",
+      "label": "contains",
+      "kind": "contains"
+    },
+    {
+      "from": "target",
+      "to": "entry-src-codebase-understanding-cli-py",
+      "label": "contains",
+      "kind": "contains"
+    },
+    {
+      "from": "target",
+      "to": "dir-docs",
+      "label": "contains",
+      "kind": "contains"
+    },
+    {
+      "from": "target",
+      "to": "dir-scripts",
+      "label": "contains",
+      "kind": "contains"
+    },
+    {
+      "from": "target",
+      "to": "dir-skill",
+      "label": "contains",
+      "kind": "contains"
+    },
+    {
+      "from": "target",
+      "to": "dir-src",
+      "label": "contains",
+      "kind": "contains"
+    },
+    {
+      "from": "target",
+      "to": "dir-tests",
+      "label": "contains",
+      "kind": "contains"
+    },
+    {
+      "from": "vibe-audit",
+      "to": "target",
+      "label": "examines",
+      "kind": "examines"
+    },
+    {
+      "from": "file-src-codebase-understanding-cli-py",
+      "to": "file-src-codebase-understanding-init-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-codebase-understanding-cli-py",
+      "to": "file-src-codebase-understanding-import-graph-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-codebase-understanding-cli-py",
+      "to": "file-src-codebase-understanding-inventory-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-codebase-understanding-cli-py",
+      "to": "file-src-codebase-understanding-pack-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-codebase-understanding-cli-py",
+      "to": "file-src-codebase-understanding-render-site-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-codebase-understanding-cli-py",
+      "to": "file-src-codebase-understanding-vibe-audit-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-codebase-understanding-import-graph-py",
+      "to": "file-src-codebase-understanding-inventory-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-codebase-understanding-pack-py",
+      "to": "file-src-codebase-understanding-import-graph-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-codebase-understanding-pack-py",
+      "to": "file-src-codebase-understanding-inventory-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-codebase-understanding-pack-py",
+      "to": "file-src-codebase-understanding-vibe-audit-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-codebase-understanding-vibe-audit-py",
+      "to": "file-src-codebase-understanding-inventory-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-tests-test-import-graph-py",
+      "to": "file-src-codebase-understanding-import-graph-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-tests-test-inventory-py",
+      "to": "file-src-codebase-understanding-inventory-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-tests-test-pack-py",
+      "to": "file-src-codebase-understanding-pack-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-tests-test-render-site-py",
+      "to": "file-src-codebase-understanding-render-site-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-tests-test-vibe-audit-py",
+      "to": "file-src-codebase-understanding-vibe-audit-py",
+      "label": "imports",
+      "kind": "imports"
+    }
+  ],
+  "flows": [
+    {
+      "name": "快速学习流程",
+      "summary": "先盘点结构，再审计生成遗留，最后阅读入口并制定优化路线。",
+      "steps": [
+        {
+          "label": "盘点文件与 manifest",
+          "node": "target",
+          "path": "inventory.json",
+          "summary": "建立项目类型、入口、目录分布。"
+        },
+        {
+          "label": "检查 vibe-coded 风险",
+          "node": "vibe-audit",
+          "path": "vibe_audit.json",
+          "summary": "寻找未接线、缺验证、缺文件、重复实现等线索。"
+        },
+        {
+          "label": "提取 import graph",
+          "node": "target",
+          "path": "import_graph.json",
+          "summary": "用文件级依赖边确认实际接线方向。"
+        },
+        {
+          "label": "阅读入口文件",
+          "node": "target",
+          "path": ".",
+          "summary": "从 entrypoint candidates 开始追踪真实路径。"
+        },
+        {
+          "label": "排优化顺序",
+          "node": "vibe-audit",
+          "path": "open-questions.md",
+          "summary": "先修验证和接线，再做架构和功能优化。"
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "claim": "Project types were inferred from manifests and filenames.",
+      "path": "inventory.json",
+      "detail": "Codex skill, Python project"
+    },
+    {
+      "claim": "Vibe audit findings are heuristic leads, not deletion proof.",
+      "path": "vibe_audit.json",
+      "detail": "0 findings"
+    },
+    {
+      "claim": "Import graph edges are file-level static dependencies.",
+      "path": "import_graph.json",
+      "detail": "16 internal edges"
+    }
+  ],
+  "questions": []
+}

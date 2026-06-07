@@ -1,0 +1,20 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+dist/
+build/
+*.egg-info/
+
+# Analysis artifacts are generated. Track only curated packs by unignoring them.
+analyses/*
+!analyses/README.md
+!analyses/2026-06-08-codebase-understanding-framework-import-graph/
+!analyses/2026-06-08-codebase-understanding-framework-import-graph/**
+analyses/**/site/
+analyses/**/*-manual.json
