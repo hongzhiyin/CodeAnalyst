@@ -1,0 +1,1145 @@
+{
+  "target": "/Users/chihoyo/Project/CodeAnalyst",
+  "file_count_scanned": 18,
+  "truncated": false,
+  "summary": {
+    "edge_count": 123,
+    "internal_edge_count": 26,
+    "scope_counts": {
+      "external": 97,
+      "internal": 26
+    },
+    "language_counts": {
+      "python": 123
+    }
+  },
+  "files": [
+    "src/code_analyst/__init__.py",
+    "src/code_analyst/cli.py",
+    "src/code_analyst/flow_map.py",
+    "src/code_analyst/import_graph.py",
+    "src/code_analyst/inventory.py",
+    "src/code_analyst/pack.py",
+    "src/code_analyst/render_site.py",
+    "src/code_analyst/review_pack.py",
+    "src/code_analyst/script_check.py",
+    "src/code_analyst/vibe_audit.py",
+    "tests/test_flow_map.py",
+    "tests/test_import_graph.py",
+    "tests/test_inventory.py",
+    "tests/test_pack.py",
+    "tests/test_render_site.py",
+    "tests/test_review_pack.py",
+    "tests/test_script_check.py",
+    "tests/test_vibe_audit.py"
+  ],
+  "edges": [
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": null,
+      "module": "argparse",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": null,
+      "module": "os",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 7
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": null,
+      "module": "shutil",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 8
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": null,
+      "module": "sys",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 9
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 10
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": "src/code_analyst/__init__.py",
+      "module": ".",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 12
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": "src/code_analyst/flow_map.py",
+      "module": ".flow_map",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 13
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": "src/code_analyst/import_graph.py",
+      "module": ".import_graph",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 14
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": "src/code_analyst/inventory.py",
+      "module": ".inventory",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 15
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": "src/code_analyst/pack.py",
+      "module": ".pack",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 16
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": "src/code_analyst/render_site.py",
+      "module": ".render_site",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 17
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": "src/code_analyst/review_pack.py",
+      "module": ".review_pack",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 18
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": "src/code_analyst/script_check.py",
+      "module": ".script_check",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 19
+    },
+    {
+      "from": "src/code_analyst/cli.py",
+      "to": "src/code_analyst/vibe_audit.py",
+      "module": ".vibe_audit",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 20
+    },
+    {
+      "from": "src/code_analyst/flow_map.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "src/code_analyst/flow_map.py",
+      "to": null,
+      "module": "ast",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "src/code_analyst/flow_map.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "src/code_analyst/flow_map.py",
+      "to": null,
+      "module": "re",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 7
+    },
+    {
+      "from": "src/code_analyst/flow_map.py",
+      "to": null,
+      "module": "collections",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 8
+    },
+    {
+      "from": "src/code_analyst/flow_map.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 9
+    },
+    {
+      "from": "src/code_analyst/flow_map.py",
+      "to": null,
+      "module": "typing",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 10
+    },
+    {
+      "from": "src/code_analyst/flow_map.py",
+      "to": "src/code_analyst/inventory.py",
+      "module": ".inventory",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 12
+    },
+    {
+      "from": "src/code_analyst/import_graph.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "src/code_analyst/import_graph.py",
+      "to": null,
+      "module": "ast",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "src/code_analyst/import_graph.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "src/code_analyst/import_graph.py",
+      "to": null,
+      "module": "re",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 7
+    },
+    {
+      "from": "src/code_analyst/import_graph.py",
+      "to": null,
+      "module": "collections",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 8
+    },
+    {
+      "from": "src/code_analyst/import_graph.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 9
+    },
+    {
+      "from": "src/code_analyst/import_graph.py",
+      "to": null,
+      "module": "typing",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 10
+    },
+    {
+      "from": "src/code_analyst/import_graph.py",
+      "to": "src/code_analyst/inventory.py",
+      "module": ".inventory",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 12
+    },
+    {
+      "from": "src/code_analyst/inventory.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "src/code_analyst/inventory.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "src/code_analyst/inventory.py",
+      "to": null,
+      "module": "os",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "src/code_analyst/inventory.py",
+      "to": null,
+      "module": "collections",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 7
+    },
+    {
+      "from": "src/code_analyst/inventory.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 8
+    },
+    {
+      "from": "src/code_analyst/inventory.py",
+      "to": null,
+      "module": "typing",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 9
+    },
+    {
+      "from": "src/code_analyst/pack.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "src/code_analyst/pack.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "src/code_analyst/pack.py",
+      "to": null,
+      "module": "re",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "src/code_analyst/pack.py",
+      "to": null,
+      "module": "datetime",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 7
+    },
+    {
+      "from": "src/code_analyst/pack.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 8
+    },
+    {
+      "from": "src/code_analyst/pack.py",
+      "to": null,
+      "module": "typing",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 9
+    },
+    {
+      "from": "src/code_analyst/pack.py",
+      "to": "src/code_analyst/flow_map.py",
+      "module": ".flow_map",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 11
+    },
+    {
+      "from": "src/code_analyst/pack.py",
+      "to": "src/code_analyst/import_graph.py",
+      "module": ".import_graph",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 12
+    },
+    {
+      "from": "src/code_analyst/pack.py",
+      "to": "src/code_analyst/inventory.py",
+      "module": ".inventory",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 13
+    },
+    {
+      "from": "src/code_analyst/pack.py",
+      "to": "src/code_analyst/script_check.py",
+      "module": ".script_check",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 14
+    },
+    {
+      "from": "src/code_analyst/pack.py",
+      "to": "src/code_analyst/vibe_audit.py",
+      "module": ".vibe_audit",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 15
+    },
+    {
+      "from": "src/code_analyst/render_site.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 4
+    },
+    {
+      "from": "src/code_analyst/render_site.py",
+      "to": null,
+      "module": "argparse",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "src/code_analyst/render_site.py",
+      "to": null,
+      "module": "html",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 7
+    },
+    {
+      "from": "src/code_analyst/render_site.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 8
+    },
+    {
+      "from": "src/code_analyst/render_site.py",
+      "to": null,
+      "module": "re",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 9
+    },
+    {
+      "from": "src/code_analyst/render_site.py",
+      "to": null,
+      "module": "copy",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 10
+    },
+    {
+      "from": "src/code_analyst/render_site.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 11
+    },
+    {
+      "from": "src/code_analyst/render_site.py",
+      "to": null,
+      "module": "typing",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 12
+    },
+    {
+      "from": "src/code_analyst/review_pack.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "src/code_analyst/review_pack.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "src/code_analyst/review_pack.py",
+      "to": null,
+      "module": "collections",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "src/code_analyst/review_pack.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 7
+    },
+    {
+      "from": "src/code_analyst/review_pack.py",
+      "to": null,
+      "module": "typing",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 8
+    },
+    {
+      "from": "src/code_analyst/review_pack.py",
+      "to": "src/code_analyst/pack.py",
+      "module": ".pack",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 10
+    },
+    {
+      "from": "src/code_analyst/script_check.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "src/code_analyst/script_check.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "src/code_analyst/script_check.py",
+      "to": null,
+      "module": "re",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "src/code_analyst/script_check.py",
+      "to": null,
+      "module": "shlex",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 7
+    },
+    {
+      "from": "src/code_analyst/script_check.py",
+      "to": null,
+      "module": "tomllib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 8
+    },
+    {
+      "from": "src/code_analyst/script_check.py",
+      "to": null,
+      "module": "collections",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 9
+    },
+    {
+      "from": "src/code_analyst/script_check.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 10
+    },
+    {
+      "from": "src/code_analyst/script_check.py",
+      "to": null,
+      "module": "typing",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 11
+    },
+    {
+      "from": "src/code_analyst/vibe_audit.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "src/code_analyst/vibe_audit.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "src/code_analyst/vibe_audit.py",
+      "to": null,
+      "module": "re",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "src/code_analyst/vibe_audit.py",
+      "to": null,
+      "module": "collections",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 7
+    },
+    {
+      "from": "src/code_analyst/vibe_audit.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 8
+    },
+    {
+      "from": "src/code_analyst/vibe_audit.py",
+      "to": null,
+      "module": "typing",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 9
+    },
+    {
+      "from": "src/code_analyst/vibe_audit.py",
+      "to": "src/code_analyst/inventory.py",
+      "module": ".inventory",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 11
+    },
+    {
+      "from": "tests/test_flow_map.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 1
+    },
+    {
+      "from": "tests/test_flow_map.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "tests/test_flow_map.py",
+      "to": null,
+      "module": "tempfile",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 4
+    },
+    {
+      "from": "tests/test_flow_map.py",
+      "to": null,
+      "module": "unittest",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "tests/test_flow_map.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "tests/test_flow_map.py",
+      "to": "src/code_analyst/flow_map.py",
+      "module": "code_analyst.flow_map",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 8
+    },
+    {
+      "from": "tests/test_import_graph.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 1
+    },
+    {
+      "from": "tests/test_import_graph.py",
+      "to": null,
+      "module": "tempfile",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "tests/test_import_graph.py",
+      "to": null,
+      "module": "unittest",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 4
+    },
+    {
+      "from": "tests/test_import_graph.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "tests/test_import_graph.py",
+      "to": "src/code_analyst/import_graph.py",
+      "module": "code_analyst.import_graph",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 7
+    },
+    {
+      "from": "tests/test_inventory.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 1
+    },
+    {
+      "from": "tests/test_inventory.py",
+      "to": null,
+      "module": "tempfile",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "tests/test_inventory.py",
+      "to": null,
+      "module": "unittest",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 4
+    },
+    {
+      "from": "tests/test_inventory.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "tests/test_inventory.py",
+      "to": "src/code_analyst/inventory.py",
+      "module": "code_analyst.inventory",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 7
+    },
+    {
+      "from": "tests/test_pack.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 1
+    },
+    {
+      "from": "tests/test_pack.py",
+      "to": null,
+      "module": "tempfile",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "tests/test_pack.py",
+      "to": null,
+      "module": "unittest",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 4
+    },
+    {
+      "from": "tests/test_pack.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "tests/test_pack.py",
+      "to": "src/code_analyst/pack.py",
+      "module": "code_analyst.pack",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 7
+    },
+    {
+      "from": "tests/test_render_site.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 1
+    },
+    {
+      "from": "tests/test_render_site.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "tests/test_render_site.py",
+      "to": null,
+      "module": "tempfile",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 4
+    },
+    {
+      "from": "tests/test_render_site.py",
+      "to": null,
+      "module": "unittest",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "tests/test_render_site.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "tests/test_render_site.py",
+      "to": "src/code_analyst/render_site.py",
+      "module": "code_analyst.render_site",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 8
+    },
+    {
+      "from": "tests/test_review_pack.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 1
+    },
+    {
+      "from": "tests/test_review_pack.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "tests/test_review_pack.py",
+      "to": null,
+      "module": "tempfile",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 4
+    },
+    {
+      "from": "tests/test_review_pack.py",
+      "to": null,
+      "module": "unittest",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "tests/test_review_pack.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "tests/test_review_pack.py",
+      "to": "src/code_analyst/review_pack.py",
+      "module": "code_analyst.review_pack",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 8
+    },
+    {
+      "from": "tests/test_script_check.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 1
+    },
+    {
+      "from": "tests/test_script_check.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "tests/test_script_check.py",
+      "to": null,
+      "module": "tempfile",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 4
+    },
+    {
+      "from": "tests/test_script_check.py",
+      "to": null,
+      "module": "unittest",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "tests/test_script_check.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "tests/test_script_check.py",
+      "to": "src/code_analyst/script_check.py",
+      "module": "code_analyst.script_check",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 8
+    },
+    {
+      "from": "tests/test_vibe_audit.py",
+      "to": null,
+      "module": "__future__",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 1
+    },
+    {
+      "from": "tests/test_vibe_audit.py",
+      "to": null,
+      "module": "json",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 3
+    },
+    {
+      "from": "tests/test_vibe_audit.py",
+      "to": null,
+      "module": "tempfile",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 4
+    },
+    {
+      "from": "tests/test_vibe_audit.py",
+      "to": null,
+      "module": "unittest",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 5
+    },
+    {
+      "from": "tests/test_vibe_audit.py",
+      "to": null,
+      "module": "pathlib",
+      "kind": "imports",
+      "language": "python",
+      "scope": "external",
+      "line": 6
+    },
+    {
+      "from": "tests/test_vibe_audit.py",
+      "to": "src/code_analyst/vibe_audit.py",
+      "module": "code_analyst.vibe_audit",
+      "kind": "imports",
+      "language": "python",
+      "scope": "internal",
+      "line": 8
+    }
+  ]
+}

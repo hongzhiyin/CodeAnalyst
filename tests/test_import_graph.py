@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from codebase_understanding.import_graph import create_import_graph
+from code_analyst.import_graph import create_import_graph
 
 
 class ImportGraphTest(unittest.TestCase):

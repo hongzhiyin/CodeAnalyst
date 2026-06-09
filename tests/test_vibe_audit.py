@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from codebase_understanding.vibe_audit import audit_vibe_project
+from code_analyst.vibe_audit import audit_vibe_project
 
 
 class VibeAuditTest(unittest.TestCase):

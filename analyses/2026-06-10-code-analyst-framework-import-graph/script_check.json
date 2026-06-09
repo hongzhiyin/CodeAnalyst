@@ -1,0 +1,19 @@
+{
+  "target": "/Users/chihoyo/Project/CodeAnalyst",
+  "summary": {
+    "check_count": 1,
+    "status_counts": {
+      "ok": 1
+    }
+  },
+  "checks": [
+    {
+      "status": "ok",
+      "source": "pyproject project.scripts",
+      "name": "code-analyst",
+      "target": "src/code_analyst/cli.py",
+      "detail": "Python entrypoint module exists.",
+      "evidence": "code_analyst.cli:main"
+    }
+  ]
+}

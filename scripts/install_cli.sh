@@ -2,23 +2,20 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BIN_DIR="${CBU_BIN_DIR:-/opt/homebrew/bin}"
+BIN_DIR="${CODE_ANALYST_BIN_DIR:-/opt/homebrew/bin}"
 
 mkdir -p "$BIN_DIR"
 
-cat > "$BIN_DIR/cbu" <<EOF
+rm -f "$BIN_DIR/cbu" "$BIN_DIR/codeanalyst" "$BIN_DIR/codebase-understanding" "$BIN_DIR/code-analyst"
+
+cat > "$BIN_DIR/code-analyst" <<EOF
 #!/usr/bin/env bash
 set -euo pipefail
+export CODE_ANALYST_PROJECT_DIR="$ROOT"
+export CODE_ANALYST_CLI_PROG="code-analyst"
 export PYTHONPATH="$ROOT/src\${PYTHONPATH:+:\$PYTHONPATH}"
-exec python3 -m codebase_understanding.cli "\$@"
+exec python3 -m code_analyst.cli "\$@"
 EOF
 
-cat > "$BIN_DIR/codebase-understanding" <<EOF
-#!/usr/bin/env bash
-set -euo pipefail
-export PYTHONPATH="$ROOT/src\${PYTHONPATH:+:\$PYTHONPATH}"
-exec python3 -m codebase_understanding.cli "\$@"
-EOF
-
-chmod +x "$BIN_DIR/cbu" "$BIN_DIR/codebase-understanding"
-echo "Installed cbu and codebase-understanding wrappers in $BIN_DIR"
+chmod +x "$BIN_DIR/code-analyst"
+echo "Installed code-analyst wrapper in $BIN_DIR"

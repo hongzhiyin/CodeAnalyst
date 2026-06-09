@@ -1,0 +1,48 @@
+{
+  "target": "/Users/chihoyo/Project/CodeAnalyst",
+  "file_count_scanned": 20,
+  "truncated": false,
+  "summary": {
+    "flow_count": 2,
+    "kind_counts": {
+      "python-cli": 2
+    },
+    "confidence_counts": {
+      "high": 1,
+      "medium": 1
+    }
+  },
+  "flows": [
+    {
+      "id": "python-cli-src/code_analyst/cli.py",
+      "kind": "python-cli",
+      "title": "Python CLI/runtime entry: src/code_analyst/cli.py",
+      "confidence": "high",
+      "entrypoints": [
+        "src/code_analyst/cli.py"
+      ],
+      "evidence": [
+        "`src/code_analyst/cli.py` has CLI-like filename.",
+        "`src/code_analyst/cli.py` contains CLI/runtime markers."
+      ],
+      "next_steps": [
+        "Read argument parsing and dispatch functions, then follow imported helpers."
+      ]
+    },
+    {
+      "id": "python-cli-src/code_analyst/render_site.py",
+      "kind": "python-cli",
+      "title": "Python CLI/runtime entry: src/code_analyst/render_site.py",
+      "confidence": "medium",
+      "entrypoints": [
+        "src/code_analyst/render_site.py"
+      ],
+      "evidence": [
+        "`src/code_analyst/render_site.py` contains CLI/runtime markers."
+      ],
+      "next_steps": [
+        "Read argument parsing and dispatch functions, then follow imported helpers."
+      ]
+    }
+  ]
+}

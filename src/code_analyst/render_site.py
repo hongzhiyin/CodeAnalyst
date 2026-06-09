@@ -1061,7 +1061,7 @@ def verify_embedded_json(html_text: str) -> None:
 
 def render_html(data: dict[str, Any], locale: str) -> str:
     zh = locale.lower().startswith("zh")
-    default_title = "代码库理解" if zh else "Codebase Understanding"
+    default_title = "代码库理解" if zh else "CodeAnalyst"
     default_summary = "一张用于理解代码结构、流程和证据的可视化地图。" if zh else "A visual map of the analyzed codebase."
     title = html.escape(str(data.get("title") or default_title))
     summary = html.escape(str(data.get("summary") or default_summary))

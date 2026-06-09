@@ -1,0 +1,8 @@
+interface:
+  display_name: "CodeAnalyst"
+  short_description: "Analyze local codebases into explanations, reviews, and diagrams"
+  brand_color: "#2563EB"
+  default_prompt: "Use CodeAnalyst ($code-analyst) to analyze this local folder, write artifacts to the central CodeAnalyst library by default, and produce an evidence-backed explanation with review guidance, diagrams, and an optional static visualization page."
+
+policy:
+  allow_implicit_invocation: true

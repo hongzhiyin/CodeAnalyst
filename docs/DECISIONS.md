@@ -1,6 +1,6 @@
-# Codebase Understanding DECISIONS
+# CodeAnalyst DECISIONS
 
-## D-001 - Split Codebase Understanding into Skill plus CLI
+## D-001 - Split CodeAnalyst into Skill plus CLI
 
 **Status**: accepted
 
@@ -8,7 +8,7 @@
 
 **Context**:
 
-The installed `codebase-understanding` skill is already useful, but most repeatable work still happens as free-form agent behavior: file enumeration, manifest detection, vibe-coded leftover checks, output-root naming, pack generation, and validation. Current public guidance points in the same direction: repository instructions should stay concise, repeated workflows should become skills or commands, agent work needs explicit verification, and unnecessary context files can increase cost or even reduce task success.
+The installed `code-analyst` skill is already useful, but most repeatable work still happens as free-form agent behavior: file enumeration, manifest detection, vibe-coded leftover checks, output-root naming, pack generation, and validation. Current public guidance points in the same direction: repository instructions should stay concise, repeated workflows should become skills or commands, agent work needs explicit verification, and unnecessary context files can increase cost or even reduce task success.
 
 **Options**:
 
@@ -16,7 +16,7 @@ The installed `codebase-understanding` skill is already useful, but most repeata
 2. Create a CLI-only tool and stop using a skill.
 3. Use a layered `skill + CLI` design.
 
-**Decision**:
+**Chosen**:
 
 Choose option 3: use `skill + CLI`.
 
@@ -49,7 +49,7 @@ Choose option 3: use `skill + CLI`.
 - `docs/SPEC.md`
 - `docs/ARCHITECTURE.md`
 - `docs/ROADMAP.md`
-- `src/codebase_understanding/*`
+- `src/code_analyst/*`
 - `skill/SKILL.md`
 
 ## D-002 - Install the CLI as PATH Wrappers Instead of System Python Package
@@ -65,29 +65,29 @@ The first `scripts/install_cli.sh` attempted `python3 -m pip install "$ROOT"` an
 **Options**:
 
 1. Force pip with `--break-system-packages`.
-2. Create a project `.venv` and require users/skills to call `.venv/bin/cbu`.
-3. Install small shell wrappers in `/opt/homebrew/bin` that set `PYTHONPATH` to this source checkout and execute `python3 -m codebase_understanding.cli`.
+2. Create a project `.venv` and require users/skills to call `.venv/bin/code-analyst`.
+3. Install small shell wrappers in `/opt/homebrew/bin` that set `PYTHONPATH` to this source checkout and execute `python3 -m code_analyst.cli`.
 
-**Decision**:
+**Chosen**:
 
 Choose option 3.
 
 **Rationale**:
 
 - It avoids mutating the externally managed Python environment.
-- It keeps `cbu` available from any folder, matching the companion skill command surface.
+- It keeps `code-analyst` available from any folder, matching the companion skill command surface.
 - It stays simple because the CLI is standard-library only.
 - It keeps the source project as the durable implementation rather than copying generated code into site-packages.
 
 **Risks**:
 
-- The wrappers depend on `/Users/chihoyo/Project/CodebaseUnderstanding` staying in place.
-- If Python changes incompatibly, `cbu doctor` should surface it.
+- The wrappers depend on `/Users/chihoyo/Project/CodeAnalyst` staying in place.
+- If Python changes incompatibly, `code-analyst doctor` should surface it.
 
 **Affected Docs/Code**:
 
 - `scripts/install_cli.sh`
-- `src/codebase_understanding/cli.py`
+- `src/code_analyst/cli.py`
 - `docs/ROADMAP.md`
 
 ## D-003 - Use File-Level Static Import Graph Before Call Graphs
@@ -106,7 +106,7 @@ The next framework step needs stronger evidence about actual wiring. A full call
 2. Start with file-level import graph extraction for Python and JS/TS.
 3. Skip static dependency extraction and rely on manual reading.
 
-**Decision**:
+**Chosen**:
 
 Choose option 2.
 
@@ -125,7 +125,270 @@ Choose option 2.
 
 **Affected Docs/Code**:
 
-- `src/codebase_understanding/import_graph.py`
-- `src/codebase_understanding/cli.py`
-- `src/codebase_understanding/pack.py`
+- `src/code_analyst/import_graph.py`
+- `src/code_analyst/cli.py`
+- `src/code_analyst/pack.py`
 - `tests/test_import_graph.py`
+
+## D-004 - Adopt skill-local `bin/code-analyst` wrappers for installed skills
+
+**Status**: accepted
+
+**Date**: 2026-06-08
+
+**Context**:
+
+After `skill-cli-kit` became the reusable portability checker, auditing this
+project showed that `code-analyst` had the right source shape but
+still relied on older installed-skill assumptions: source `SKILL.md` did not
+advertise the `code-analyst` dependency, sync did not generate an installed
+skill-local wrapper, and updates required manual sequencing.
+
+**Options**:
+
+1. Keep the existing installed scripts and hard-coded source fallback.
+2. Require only global `/opt/homebrew/bin/code-analyst`.
+3. Adopt the `skill-cli-kit` contract: source skill metadata, PATH first,
+   installed `bin/code-analyst` second, `CODE_ANALYST_PROJECT_DIR` source fallback third, and a
+   project-local update lifecycle.
+
+**Chosen**:
+
+Choose option 3.
+
+**Rationale**:
+
+- It lets agents run the CLI from arbitrary working directories without
+  guessing the source path.
+- It keeps `/Users/chihoyo/Project/CodeAnalyst` as the editable
+  source checkout and treats installed skill directories as generated copies.
+- It makes `skillcli audit` useful as an ongoing portability regression check.
+- It replaces older installed helper scripts with one wrapper back to the
+  source CLI, reducing drift.
+
+**Risks**:
+
+- The wrapper depends on the source checkout path staying stable. Mitigation:
+  `code-analyst doctor` surfaces the installed wrapper state and `scripts/sync_skill.sh
+  --force` regenerates it.
+- Replacing the installed skill can remove old files that were not copied back
+  into source. Mitigation: keep `agents/openai.yaml`, `output-contract.md`, and
+  `diagram-recipes.md` under `skill/` before syncing.
+
+**Affected Docs/Code**:
+
+- `skill/SKILL.md`
+- `skill/agents/openai.yaml`
+- `skill/references/output-contract.md`
+- `skill/references/diagram-recipes.md`
+- `scripts/sync_skill.sh`
+- `scripts/update_cli.sh`
+- `src/code_analyst/cli.py`
+- `README.md`
+
+## D-005 - Keep review and design guidance in this analysis assistant
+
+**Status**: accepted
+
+**Date**: 2026-06-10
+
+**Context**:
+
+The framework is expanding beyond codebase understanding into code reading,
+review, refactor suggestions, and architecture design guidance. The intended
+shape is an analysis assistant: it explains what each part of a project does,
+how the pieces connect, where the risks are, and what improvement directions
+are worth considering. Actual code changes should happen in the target
+project's own iteration loop.
+
+**Options**:
+
+1. Limit this project to basic codebase onboarding only.
+2. Create a separate project immediately for review/refactor/design guidance.
+3. Keep code reading, review, refactor direction, and architecture design
+   guidance in this project, while leaving actual edits to each target project.
+
+**Chosen**:
+
+Choose option 3.
+
+**Rationale**:
+
+- Review/design recommendations reuse the same deterministic scans and
+  evidence contracts.
+- Keeping them together avoids duplicating CLI wrappers, pack generation,
+  site rendering, and skill sync logic.
+- The natural deliverable here is a better mental model plus better options,
+  not a patch against another repository.
+- Target projects should own their own code changes, tests, commits, and
+  product iteration history.
+
+**Risks**:
+
+- The command surface can become too broad. Mitigation: ROADMAP separates
+  understanding, review/design guidance, and target-project implementation.
+- Review recommendations can sound more certain than the evidence supports.
+  Mitigation: keep evidence citations and inference labels mandatory.
+
+**Affected Docs/Code**:
+
+- `docs/SPEC.md`
+- `docs/ROADMAP.md`
+- `src/code_analyst/review_pack.py`
+
+## D-006 - Add multi-kind flow map and script checks before deeper call graphs
+
+**Status**: accepted
+
+**Date**: 2026-06-10
+
+**Context**:
+
+The framework needs to support more than frontend projects. CLI tools,
+backend services, Node packages, Codex skills, and generated apps all have
+different user-facing entrypoints. A deeper call graph remains useful, but
+before that the tool needs a reliable way to find declared commands and
+project-kind-specific flow hints.
+
+**Options**:
+
+1. Prioritize frontend route/component detection only.
+2. Build full cross-language call/dataflow analysis now.
+3. Add generic `flow-map` and `script-check` first, with frontend hints as one
+   project kind among several.
+
+**Chosen**:
+
+Choose option 3.
+
+**Rationale**:
+
+- It directly supports CLI, service, skill, Node, and frontend targets.
+- It keeps analysis read-only and dependency-free.
+- It catches common generated-project failures: stale scripts, missing bins,
+  unverified Python entrypoints, and UI controls/handlers that need tracing.
+
+**Risks**:
+
+- Flow hints are not runtime proof. They must be presented as leads.
+- Some dynamic framework routes and generated commands may be missed.
+
+**Affected Docs/Code**:
+
+- `src/code_analyst/flow_map.py`
+- `src/code_analyst/script_check.py`
+- `src/code_analyst/cli.py`
+- `src/code_analyst/pack.py`
+- `tests/test_flow_map.py`
+- `tests/test_script_check.py`
+
+## D-007 - Add `review-pack` as recommendation output, not patch output
+
+**Status**: accepted
+
+**Date**: 2026-06-10
+
+**Context**:
+
+Step 4 needs a durable output for code review, refactor direction, and
+architecture design advice. The project should help the user read code and
+choose better next moves, while leaving actual edits to each analyzed target
+project.
+
+**Options**:
+
+1. Extend `pack` only and put all advice into existing Markdown files.
+2. Add `review-pack` that reuses the standard pack evidence and writes
+   `review.md` plus `review_pack.json`.
+3. Add a patch-generating refactor command.
+
+**Chosen**:
+
+Choose option 2.
+
+**Rationale**:
+
+- A dedicated command makes the analysis-assistant mode explicit.
+- Reusing pack evidence keeps advice tied to `inventory`, `flow-map`,
+  `script-check`, `import-graph`, and `vibe-audit`.
+- JSON output gives future agents a stable way to consume severity,
+  confidence, implementation risk, and evidence.
+- Avoiding patches preserves the target-project boundary.
+
+**Risks**:
+
+- Advice can become formulaic if the heuristics stay too generic. Mitigation:
+  ROADMAP keeps project-kind-specific templates as follow-up work.
+- A user may expect this command to fix code. Mitigation: CLI and Markdown
+  output both state that recommendations should be implemented in the target
+  project.
+
+**Affected Docs/Code**:
+
+- `src/code_analyst/review_pack.py`
+- `src/code_analyst/cli.py`
+- `tests/test_review_pack.py`
+- `docs/SPEC.md`
+- `docs/ROADMAP.md`
+- `skill/SKILL.md`
+
+## D-008 - Rename to CodeAnalyst and remove legacy aliases
+
+**Status**: accepted
+
+**Date**: 2026-06-10
+
+**Context**:
+
+The user wants the project to feel like a reusable assistant for understanding,
+analyzing, reviewing, and planning refactors across many other codebases.
+`CodeReader` was attractive but too reading-only. `CodeAnalyst` better captures
+analysis and judgment without implying that this project directly edits target
+projects.
+
+Earlier technical identifiers were wired into wrappers, installed skills,
+generated analysis paths, memory records, and docs. The final direction is to
+finish the rename instead of preserving legacy aliases long term.
+
+**Options**:
+
+1. Keep old aliases indefinitely.
+2. Use CodeAnalyst as display name but keep old package, skill, and wrapper names.
+3. Rename the project to CodeAnalyst, keep only `code-analyst` as the CLI, and
+   remove old wrappers/installed skill copies during install/sync.
+
+**Chosen**:
+
+Choose option 3.
+
+**Rationale**:
+
+- `CodeAnalyst` is the human-facing name and `code-analyst` is the idiomatic
+  multi-word shell command.
+- Removing legacy aliases keeps future docs, installed skills, and PATH
+  wrappers simpler.
+- A single physical source checkout path avoids confusing new agents.
+- Install/sync scripts can clean up known generated legacy wrappers and skill
+  copies safely.
+
+**Risks**:
+
+- Existing memory entries and older chat references may still mention the old
+  path. Mitigation: final responses should call out the new path after the move.
+- Removing wrappers can break old shell habits. Mitigation: README.md and
+  AGENTS.md show only the new command.
+
+**Affected Docs/Code**:
+
+- `README.md`
+- `docs/SPEC.md`
+- `docs/ARCHITECTURE.md`
+- `docs/ROADMAP.md`
+- `scripts/install_cli.sh`
+- `scripts/sync_skill.sh`
+- `scripts/check_install.sh`
+- `pyproject.toml`
+- `scripts/install_cli.sh`
+- `scripts/sync_skill.sh`
+- `scripts/check_install.sh`
+- `pyproject.toml`

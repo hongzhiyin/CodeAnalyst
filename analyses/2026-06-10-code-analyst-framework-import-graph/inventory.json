@@ -1,6 +1,6 @@
 {
-  "root": "/Users/chihoyo/Project/CodebaseUnderstanding",
-  "file_count_scanned": 24,
+  "root": "/Users/chihoyo/Project/CodeAnalyst",
+  "file_count_scanned": 36,
   "truncated": false,
   "project_types": [
     "Codex skill",
@@ -13,27 +13,33 @@
   ],
   "entrypoint_candidates": [
     "skill/SKILL.md",
-    "src/codebase_understanding/cli.py"
+    "src/code_analyst/cli.py"
   ],
   "top_directories": {
+    ".gitignore": 1,
     "AGENTS.md": 1,
+    "README.md": 1,
     "docs/": 4,
     "index.md": 1,
     "pyproject.toml": 1,
-    "scripts/": 3,
-    "skill/": 2,
-    "src/": 7,
-    "tests/": 5
+    "scripts/": 4,
+    "skill/": 5,
+    "src/": 10,
+    "tests/": 8
   },
   "extensions": {
-    ".py": 12,
-    ".md": 8,
-    ".sh": 3,
-    ".toml": 1
+    ".py": 18,
+    ".md": 11,
+    ".sh": 4,
+    "[no extension]": 1,
+    ".toml": 1,
+    ".yaml": 1
   },
   "tree_depth": 3,
   "tree": {
+    ".gitignore": {},
     "AGENTS.md": {},
+    "README.md": {},
     "index.md": {},
     "pyproject.toml": {},
     "docs": {
@@ -45,30 +51,42 @@
     "scripts": {
       "check_install.sh": {},
       "install_cli.sh": {},
-      "sync_skill.sh": {}
+      "sync_skill.sh": {},
+      "update_cli.sh": {}
     },
     "skill": {
       "SKILL.md": {},
+      "agents": {
+        "openai.yaml": {}
+      },
       "references": {
+        "diagram-recipes.md": {},
+        "output-contract.md": {},
         "quick-learning-framework.md": {}
       }
     },
     "src": {
-      "codebase_understanding": {
+      "code_analyst": {
         "__init__.py": {},
         "cli.py": {},
+        "flow_map.py": {},
         "import_graph.py": {},
         "inventory.py": {},
         "pack.py": {},
         "render_site.py": {},
+        "review_pack.py": {},
+        "script_check.py": {},
         "vibe_audit.py": {}
       }
     },
     "tests": {
+      "test_flow_map.py": {},
       "test_import_graph.py": {},
       "test_inventory.py": {},
       "test_pack.py": {},
       "test_render_site.py": {},
+      "test_review_pack.py": {},
+      "test_script_check.py": {},
       "test_vibe_audit.py": {}
     }
   }

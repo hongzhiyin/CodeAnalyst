@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from codebase_understanding.pack import create_pack
+from code_analyst.pack import create_pack
 
 
 class PackTest(unittest.TestCase):
@@ -27,6 +27,8 @@ class PackTest(unittest.TestCase):
                 "diagrams.md",
                 "open-questions.md",
                 "inventory.json",
+                "flow_map.json",
+                "script_check.json",
                 "import_graph.json",
                 "vibe_audit.json",
                 "understanding_graph.json",

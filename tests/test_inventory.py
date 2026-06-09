@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from codebase_understanding.inventory import create_inventory
+from code_analyst.inventory import create_inventory
 
 
 class InventoryTest(unittest.TestCase):

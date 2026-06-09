@@ -1,28 +1,41 @@
-# Codebase Understanding ARCHITECTURE
+# CodeAnalyst ARCHITECTURE
 
 ## 1. Current Shape
 
-当前工作区从中央分析库升级为源项目：
+当前工作区是 CodeAnalyst 源项目：
 
 ```text
-/Users/chihoyo/Project/CodebaseUnderstanding/
+/Users/chihoyo/Project/CodeAnalyst/
+  README.md
   index.md
   docs/
     SPEC.md
     ARCHITECTURE.md
     ROADMAP.md
     DECISIONS.md
-  src/codebase_understanding/
+  src/code_analyst/
     cli.py
+    flow_map.py
     import_graph.py
     inventory.py
+    review_pack.py
+    script_check.py
     vibe_audit.py
     pack.py
     render_site.py
   skill/
     SKILL.md
+    agents/
+      openai.yaml
     references/
       quick-learning-framework.md
+      output-contract.md
+      diagram-recipes.md
+  scripts/
+    install_cli.sh
+    sync_skill.sh
+    check_install.sh
+    update_cli.sh
   tests/
   analyses/
 ```
@@ -30,27 +43,26 @@
 已安装 skill 仍位于：
 
 ```text
-/Users/chihoyo/.codex/skills/codebase-understanding/
+/Users/chihoyo/.codex/skills/code-analyst/
   SKILL.md
-  scripts/inventory.py
-  scripts/render_understanding_site.py
-  references/output-contract.md
-  references/diagram-recipes.md
+  agents/openai.yaml
+  bin/code-analyst
+  references/
 ```
 
-本项目第一版不直接修改已安装 skill；`skill/` 是下一步可同步版本。
+`skill/` 是可同步 source-of-truth；已安装 skill 是生成副本，不再作为编辑入口。
 
 ## 2. Layers
 
 ```mermaid
 flowchart TD
-  User[用户请求] --> Skill[codebase-understanding skill]
-  Skill --> CLI[cbu CLI]
+  User[用户请求] --> Skill[code-analyst skill]
+  Skill --> CLI[code-analyst CLI]
   CLI --> Inventory[inventory 扫描]
   CLI --> Audit[vibe-audit 检查]
   CLI --> Pack[pack 生成分析包]
   Pack --> Library[central analyses library]
-  Skill --> Explain[证据化解释与优化建议]
+  Skill --> Explain[证据化解释、review 与设计建议]
 ```
 
 ## 3. Module Responsibilities
@@ -58,23 +70,46 @@ flowchart TD
 | Module | Responsibility |
 |---|---|
 | `cli.py` | argparse command surface and user-facing command dispatch. |
+| `flow_map.py` | Project-kind aware entrypoint and flow hint discovery for CLI, service, frontend, Node scripts, and skills. |
 | `import_graph.py` | File-level static import graph extraction for Python and JS/TS. |
 | `inventory.py` | Deterministic project inventory: files, manifests, entrypoints, types, top directories. |
+| `review_pack.py` | Read-only review, refactor direction, and architecture guidance generated from pack evidence. |
+| `script_check.py` | Static verification of declared package scripts, bins, and Python entrypoint targets. |
 | `vibe_audit.py` | Heuristic checks for vibe-coded leftovers and missing verification signals. |
 | `pack.py` | Output-root selection and Markdown/JSON analysis pack generation. |
 | `render_site.py` | Static HTML renderer for `understanding_graph.json`; no external dependencies. |
 | `skill/SKILL.md` | Agent workflow: decide mode, call CLI, explain confirmed facts vs inferences. |
+| `scripts/update_cli.sh` | Source update lifecycle: install, test, check, sync, and verify. |
 
 ## 3.1 Installed Commands
 
-`scripts/install_cli.sh` installs two wrappers:
+`scripts/install_cli.sh` installs one wrapper:
 
 ```text
-/opt/homebrew/bin/cbu
-/opt/homebrew/bin/codebase-understanding
+/opt/homebrew/bin/code-analyst
 ```
 
-The wrappers set `PYTHONPATH=/Users/chihoyo/Project/CodebaseUnderstanding/src` and execute `python3 -m codebase_understanding.cli`.
+The wrappers set `PYTHONPATH=/Users/chihoyo/Project/CodeAnalyst/src` and execute `python3 -m code_analyst.cli`.
+
+### 3.2 Installed Skill Wrapper
+
+`scripts/sync_skill.sh --force` replaces the installed Codex skill copy with
+`skill/`, writes `.code-analyst-skill-source`, and generates:
+
+```text
+/Users/chihoyo/.codex/skills/code-analyst/bin/code-analyst
+```
+
+That wrapper sets `CODE_ANALYST_PROJECT_DIR=/Users/chihoyo/Project/CodeAnalyst`
+and runs the source checkout CLI through `python3 -m code_analyst.cli`.
+
+### 3.3 Naming
+
+- Product/display name: `CodeAnalyst`.
+- CLI: `code-analyst`.
+- Current Python package: `code_analyst`.
+- Current source checkout: `/Users/chihoyo/Project/CodeAnalyst`.
+- Current installed skill id/path: `code-analyst`.
 
 ## 4. Data Flow
 
@@ -82,12 +117,22 @@ The wrappers set `PYTHONPATH=/Users/chihoyo/Project/CodebaseUnderstanding/src` a
 flowchart LR
   Target[目标项目] --> Files[文件枚举]
   Files --> InventoryJSON[inventory.json]
+  Files --> FlowJSON[flow_map.json]
+  Files --> ScriptJSON[script_check.json]
   Files --> ImportJSON[import_graph.json]
   Files --> AuditJSON[vibe_audit.json]
   InventoryJSON --> Markdown[overview / architecture / diagrams]
+  FlowJSON --> Graph[understanding_graph.json]
+  ScriptJSON --> Questions[open-questions.md]
   ImportJSON --> Graph[understanding_graph.json]
   AuditJSON --> Questions[open-questions.md]
+  InventoryJSON --> Review[review.md / review_pack.json]
+  FlowJSON --> Review
+  ScriptJSON --> Review
+  ImportJSON --> Review
+  AuditJSON --> Review
   Markdown --> User[学习与优化建议]
+  Review --> User
   Graph --> Site[site/index.html]
 ```
 
@@ -106,6 +151,7 @@ flowchart LR
 
 ## 7. Inferences
 
-- Inference: keeping a source project under `/Users/chihoyo/Project/CodebaseUnderstanding` will make future sync, tests, and portability cleaner than editing only the installed skill directory.
+- Inference: keeping a source project under `/Users/chihoyo/Project/CodeAnalyst` will make future sync, tests, and portability cleaner than editing only the installed skill directory.
 - Inference: a standard-library Python CLI is the right first version because it can run in many vibe-coded project folders without dependency setup.
 - Inference: file-level static import edges are strong enough for first-pass learning, but not enough to prove runtime call flow in framework-heavy apps.
+- Inference: review/refactor/design planning belongs in this project as long as the deliverable is analysis and guidance; actual code changes should be carried out in each target project with its own tests, commits, and iteration loop.

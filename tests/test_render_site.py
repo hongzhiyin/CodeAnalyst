@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from codebase_understanding.render_site import render_site
+from code_analyst.render_site import render_site
 
 
 class RenderSiteTest(unittest.TestCase):

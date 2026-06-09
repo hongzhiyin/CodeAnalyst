@@ -1,13 +1,12 @@
 [project]
-name = "codebase-understanding"
-version = "0.1.0"
-description = "Personal codebase learning framework and agent-friendly CLI."
+name = "code-analyst"
+version = "0.5.0"
+description = "CodeAnalyst personal code analysis assistant and agent-friendly CLI."
 requires-python = ">=3.10"
 dependencies = []
 
 [project.scripts]
-cbu = "codebase_understanding.cli:main"
-codebase-understanding = "codebase_understanding.cli:main"
+code-analyst = "code_analyst.cli:main"
 
 [build-system]
 requires = ["setuptools>=68"]

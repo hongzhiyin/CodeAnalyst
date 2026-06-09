@@ -1,20 +1,23 @@
-# Codebase Understanding
+# CodeAnalyst
 
 Central library for analysis artifacts generated while understanding local codebases, generated apps, Codex skills, plugins, and small software projects.
 
-This workspace is now also the source project for the personal `codebase-understanding` skill + CLI framework. The docs-driven source of truth is in `docs/`, the CLI implementation is in `src/codebase_understanding/`, and the syncable skill draft is in `skill/`.
+This workspace is now also the source project for the personal `code-analyst` skill + CLI framework. The docs-driven source of truth is in `docs/`, the CLI implementation is in `src/code_analyst/`, and the syncable skill draft is in `skill/`.
 
 ## CLI
 
 During local development:
 
 ```bash
-PYTHONPATH=src python3 -m codebase_understanding.cli doctor
-PYTHONPATH=src python3 -m codebase_understanding.cli inventory TARGET
-PYTHONPATH=src python3 -m codebase_understanding.cli import-graph TARGET
-PYTHONPATH=src python3 -m codebase_understanding.cli vibe-audit TARGET
-PYTHONPATH=src python3 -m codebase_understanding.cli pack TARGET
-PYTHONPATH=src python3 -m codebase_understanding.cli visual-pack TARGET
+PYTHONPATH=src python3 -m code_analyst.cli doctor
+PYTHONPATH=src python3 -m code_analyst.cli inventory TARGET
+PYTHONPATH=src python3 -m code_analyst.cli flow-map TARGET
+PYTHONPATH=src python3 -m code_analyst.cli script-check TARGET
+PYTHONPATH=src python3 -m code_analyst.cli import-graph TARGET
+PYTHONPATH=src python3 -m code_analyst.cli vibe-audit TARGET
+PYTHONPATH=src python3 -m code_analyst.cli pack TARGET
+PYTHONPATH=src python3 -m code_analyst.cli review-pack TARGET
+PYTHONPATH=src python3 -m code_analyst.cli visual-pack TARGET
 ```
 
 ## Structure
@@ -29,7 +32,11 @@ analyses/
     diagrams.md
     open-questions.md
     inventory.json
+    flow_map.json
+    script_check.json
     understanding_graph.json
+    review.md
+    review_pack.json
     site/
       index.html
       data.json

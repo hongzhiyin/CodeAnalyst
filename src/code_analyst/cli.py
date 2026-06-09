@@ -1,18 +1,22 @@
-"""Command line interface for the Codebase Understanding framework."""
+"""Command line interface for CodeAnalyst."""
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import sys
 from pathlib import Path
 
 from . import __version__
+from .flow_map import create_flow_map, flow_map_summary, write_flow_map
 from .import_graph import create_import_graph, import_graph_summary, write_import_graph
 from .inventory import create_inventory, inventory_summary, write_inventory
 from .pack import create_pack
 from .render_site import render_site
+from .review_pack import create_review_pack
+from .script_check import check_scripts, script_check_summary, write_script_check
 from .vibe_audit import audit_summary, audit_vibe_project, write_audit
 
 
@@ -56,12 +60,38 @@ def cmd_import_graph(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_script_check(args: argparse.Namespace) -> int:
+    report = check_scripts(args.target)
+    if args.out:
+        path = write_script_check(report, args.out)
+        print(f"Wrote: {path}")
+    if args.json:
+        _print_json(report)
+    else:
+        print(script_check_summary(report))
+    return 0
+
+
+def cmd_flow_map(args: argparse.Namespace) -> int:
+    flow_map = create_flow_map(args.target, max_files=args.max_files)
+    if args.out:
+        path = write_flow_map(flow_map, args.out)
+        print(f"Wrote: {path}")
+    if args.json:
+        _print_json(flow_map)
+    else:
+        print(flow_map_summary(flow_map))
+    return 0
+
+
 def cmd_pack(args: argparse.Namespace) -> int:
     result = create_pack(args.target, out=args.out, max_files=args.max_files, tree_depth=args.tree_depth)
     output_root = Path(result["output_root"])
     print(f"Wrote pack: {output_root}")
     print(f"Inventory files: {result['inventory']['file_count_scanned']}")
     print(f"Import edges: {result['import_graph']['summary']['edge_count']}")
+    print(f"Flow hints: {result['flow_map']['summary']['flow_count']}")
+    print(f"Script checks: {result['script_check']['summary']['check_count']}")
     print(f"Vibe findings: {result['audit']['summary']['finding_count']}")
     print("Next read:")
     for name in result["inventory"].get("entrypoint_candidates", [])[:8]:
@@ -83,7 +113,23 @@ def cmd_visual_pack(args: argparse.Namespace) -> int:
     print(f"Wrote site: {index_path}")
     print(f"Inventory files: {result['inventory']['file_count_scanned']}")
     print(f"Import edges: {result['import_graph']['summary']['edge_count']}")
+    print(f"Flow hints: {result['flow_map']['summary']['flow_count']}")
+    print(f"Script checks: {result['script_check']['summary']['check_count']}")
     print(f"Vibe findings: {result['audit']['summary']['finding_count']}")
+    return 0
+
+
+def cmd_review_pack(args: argparse.Namespace) -> int:
+    result = create_review_pack(args.target, out=args.out, max_files=args.max_files, tree_depth=args.tree_depth)
+    output_root = Path(result["output_root"])
+    review = result["review"]
+    print(f"Wrote review pack: {output_root}")
+    print(f"Review file: {output_root / 'review.md'}")
+    print(f"Advice items: {review['summary']['advice_count']}")
+    if review["summary"]["severity_counts"]:
+        counts = ", ".join(f"{key}={value}" for key, value in review["summary"]["severity_counts"].items())
+        print(f"Severity: {counts}")
+    print("Boundary: recommendations only; implement changes in the target project.")
     return 0
 
 
@@ -91,32 +137,36 @@ def cmd_doctor(args: argparse.Namespace) -> int:
     checks: list[tuple[str, bool, str]] = []
     checks.append(("python", sys.version_info >= (3, 10), sys.version.split()[0]))
     checks.append(("rg", shutil.which("rg") is not None, shutil.which("rg") or "not found"))
-    checks.append(("cbu command", shutil.which("cbu") is not None, shutil.which("cbu") or "not found"))
+    checks.append(("code-analyst command", shutil.which("code-analyst") is not None, shutil.which("code-analyst") or "not found"))
 
-    installed_skill = Path("/Users/chihoyo/.codex/skills/codebase-understanding")
+    installed_skill = Path("/Users/chihoyo/.codex/skills/code-analyst")
     checks.append(("installed skill", installed_skill.exists(), str(installed_skill)))
-    checks.append(("installed inventory script", (installed_skill / "scripts/inventory.py").exists(), str(installed_skill / "scripts/inventory.py")))
-    checks.append(("installed renderer script", (installed_skill / "scripts/render_understanding_site.py").exists(), str(installed_skill / "scripts/render_understanding_site.py")))
+    checks.append(("installed skill-local code-analyst wrapper", (installed_skill / "bin/code-analyst").exists(), str(installed_skill / "bin/code-analyst")))
 
-    library = Path("/Users/chihoyo/Project/CodebaseUnderstanding/analyses")
+    library = Path("/Users/chihoyo/Project/CodeAnalyst/analyses")
     checks.append(("analysis library", library.exists(), str(library)))
 
     failures = 0
     for name, ok, detail in checks:
         mark = "ok" if ok else "missing"
         print(f"{mark:7} {name}: {detail}")
-        if not ok and name not in {"rg", "installed renderer script", "cbu command"}:
+        if not ok and name not in {
+            "rg",
+            "code-analyst command",
+            "installed skill-local code-analyst wrapper",
+        }:
             failures += 1
 
     if failures:
         print(f"Doctor found {failures} blocking issue(s).")
         return 1
-    print(f"Codebase Understanding CLI {__version__} is ready.")
+    print(f"CodeAnalyst CLI {__version__} is ready.")
     return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="cbu", description="Fast codebase learning framework.")
+    prog = os.environ.get("CODE_ANALYST_CLI_PROG", "code-analyst")
+    parser = argparse.ArgumentParser(prog=prog, description="CodeAnalyst personal code analysis assistant.")
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -142,6 +192,19 @@ def build_parser() -> argparse.ArgumentParser:
     imports.add_argument("--max-files", type=int, default=3000)
     imports.set_defaults(func=cmd_import_graph)
 
+    scripts = sub.add_parser("script-check", help="Check declared scripts and command entrypoint references.")
+    scripts.add_argument("target", help="Folder or file to inspect")
+    scripts.add_argument("--out", help="Write script check JSON to this path")
+    scripts.add_argument("--json", action="store_true", help="Print JSON instead of a text summary")
+    scripts.set_defaults(func=cmd_script_check)
+
+    flows = sub.add_parser("flow-map", help="Discover project-kind aware flow and entrypoint hints.")
+    flows.add_argument("target", help="Folder or file to inspect")
+    flows.add_argument("--out", help="Write flow map JSON to this path")
+    flows.add_argument("--json", action="store_true", help="Print JSON instead of a text summary")
+    flows.add_argument("--max-files", type=int, default=3000)
+    flows.set_defaults(func=cmd_flow_map)
+
     pack = sub.add_parser("pack", help="Generate a Markdown/JSON learning pack.")
     pack.add_argument("target", help="Folder or file to inspect")
     pack.add_argument("--out", help="Output directory. Defaults to the central analysis library.")
@@ -162,6 +225,13 @@ def build_parser() -> argparse.ArgumentParser:
     visual.add_argument("--max-files", type=int, default=3000)
     visual.add_argument("--tree-depth", type=int, default=3)
     visual.set_defaults(func=cmd_visual_pack)
+
+    review = sub.add_parser("review-pack", help="Generate read-only review, refactor, and architecture guidance.")
+    review.add_argument("target", help="Folder or file to inspect")
+    review.add_argument("--out", help="Output directory. Defaults to the central analysis library.")
+    review.add_argument("--max-files", type=int, default=3000)
+    review.add_argument("--tree-depth", type=int, default=3)
+    review.set_defaults(func=cmd_review_pack)
 
     doctor = sub.add_parser("doctor", help="Check local CLI and installed-skill readiness.")
     doctor.set_defaults(func=cmd_doctor)

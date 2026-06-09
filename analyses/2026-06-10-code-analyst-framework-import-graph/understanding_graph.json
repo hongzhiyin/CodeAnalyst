@@ -1,11 +1,11 @@
 {
-  "title": "CodebaseUnderstanding 快速学习图",
+  "title": "CodeAnalyst 快速学习图",
   "summary": "入口、配置、顶层目录和 vibe-audit 风险的第一版结构图。",
   "locale": "zh-CN",
   "nodes": [
     {
       "id": "target",
-      "label": "CodebaseUnderstanding",
+      "label": "CodeAnalyst",
       "kind": "entrypoint",
       "group": "目标项目",
       "layer": "Source",
@@ -49,12 +49,12 @@
       "summary": "可能的用户或运行入口。"
     },
     {
-      "id": "entry-src-codebase-understanding-cli-py",
-      "label": "src/codebase_understanding/cli.py",
+      "id": "entry-src-code-analyst-cli-py",
+      "label": "src/code_analyst/cli.py",
       "kind": "entrypoint",
       "group": "Entrypoints",
       "layer": "Entrypoints",
-      "path": "src/codebase_understanding/cli.py",
+      "path": "src/code_analyst/cli.py",
       "summary": "可能的用户或运行入口。"
     },
     {
@@ -73,7 +73,7 @@
       "group": "Top directories",
       "layer": "Top directories",
       "path": "scripts/",
-      "summary": "顶层目录，扫描到 3 个文件。"
+      "summary": "顶层目录，扫描到 4 个文件。"
     },
     {
       "id": "dir-skill",
@@ -82,7 +82,7 @@
       "group": "Top directories",
       "layer": "Top directories",
       "path": "skill/",
-      "summary": "顶层目录，扫描到 2 个文件。"
+      "summary": "顶层目录，扫描到 5 个文件。"
     },
     {
       "id": "dir-src",
@@ -91,7 +91,7 @@
       "group": "Top directories",
       "layer": "Top directories",
       "path": "src/",
-      "summary": "顶层目录，扫描到 7 个文件。"
+      "summary": "顶层目录，扫描到 10 个文件。"
     },
     {
       "id": "dir-tests",
@@ -100,7 +100,7 @@
       "group": "Top directories",
       "layer": "Top directories",
       "path": "tests/",
-      "summary": "顶层目录，扫描到 5 个文件。"
+      "summary": "顶层目录，扫描到 8 个文件。"
     },
     {
       "id": "vibe-audit",
@@ -112,66 +112,120 @@
       "summary": "发现 0 条可能的生成遗留或验证风险。"
     },
     {
-      "id": "file-src-codebase-understanding-cli-py",
-      "label": "src/codebase_understanding/cli.py",
+      "id": "flow-map",
+      "label": "flow-map",
+      "kind": "data",
+      "group": "Checks",
+      "layer": "Checks",
+      "path": "flow_map.json",
+      "summary": "发现 2 条入口或流程线索。"
+    },
+    {
+      "id": "script-check",
+      "label": "script-check",
+      "kind": "test",
+      "group": "Checks",
+      "layer": "Checks",
+      "path": "script_check.json",
+      "summary": "检查 1 个脚本或命令入口声明。"
+    },
+    {
+      "id": "file-src-code-analyst-cli-py",
+      "label": "src/code_analyst/cli.py",
       "kind": "module",
       "group": "Import graph",
       "layer": "Import graph",
-      "path": "src/codebase_understanding/cli.py",
+      "path": "src/code_analyst/cli.py",
       "summary": "由 import graph 发现的源码文件。"
     },
     {
-      "id": "file-src-codebase-understanding-init-py",
-      "label": "src/codebase_understanding/__init__.py",
+      "id": "file-src-code-analyst-init-py",
+      "label": "src/code_analyst/__init__.py",
       "kind": "module",
       "group": "Import graph",
       "layer": "Import graph",
-      "path": "src/codebase_understanding/__init__.py",
+      "path": "src/code_analyst/__init__.py",
       "summary": "由 import graph 发现的源码文件。"
     },
     {
-      "id": "file-src-codebase-understanding-import-graph-py",
-      "label": "src/codebase_understanding/import_graph.py",
+      "id": "file-src-code-analyst-flow-map-py",
+      "label": "src/code_analyst/flow_map.py",
       "kind": "module",
       "group": "Import graph",
       "layer": "Import graph",
-      "path": "src/codebase_understanding/import_graph.py",
+      "path": "src/code_analyst/flow_map.py",
       "summary": "由 import graph 发现的源码文件。"
     },
     {
-      "id": "file-src-codebase-understanding-inventory-py",
-      "label": "src/codebase_understanding/inventory.py",
+      "id": "file-src-code-analyst-import-graph-py",
+      "label": "src/code_analyst/import_graph.py",
       "kind": "module",
       "group": "Import graph",
       "layer": "Import graph",
-      "path": "src/codebase_understanding/inventory.py",
+      "path": "src/code_analyst/import_graph.py",
       "summary": "由 import graph 发现的源码文件。"
     },
     {
-      "id": "file-src-codebase-understanding-pack-py",
-      "label": "src/codebase_understanding/pack.py",
+      "id": "file-src-code-analyst-inventory-py",
+      "label": "src/code_analyst/inventory.py",
       "kind": "module",
       "group": "Import graph",
       "layer": "Import graph",
-      "path": "src/codebase_understanding/pack.py",
+      "path": "src/code_analyst/inventory.py",
       "summary": "由 import graph 发现的源码文件。"
     },
     {
-      "id": "file-src-codebase-understanding-render-site-py",
-      "label": "src/codebase_understanding/render_site.py",
+      "id": "file-src-code-analyst-pack-py",
+      "label": "src/code_analyst/pack.py",
       "kind": "module",
       "group": "Import graph",
       "layer": "Import graph",
-      "path": "src/codebase_understanding/render_site.py",
+      "path": "src/code_analyst/pack.py",
       "summary": "由 import graph 发现的源码文件。"
     },
     {
-      "id": "file-src-codebase-understanding-vibe-audit-py",
-      "label": "src/codebase_understanding/vibe_audit.py",
+      "id": "file-src-code-analyst-render-site-py",
+      "label": "src/code_analyst/render_site.py",
       "kind": "module",
       "group": "Import graph",
       "layer": "Import graph",
-      "path": "src/codebase_understanding/vibe_audit.py",
+      "path": "src/code_analyst/render_site.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-src-code-analyst-review-pack-py",
+      "label": "src/code_analyst/review_pack.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "src/code_analyst/review_pack.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-src-code-analyst-script-check-py",
+      "label": "src/code_analyst/script_check.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "src/code_analyst/script_check.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-src-code-analyst-vibe-audit-py",
+      "label": "src/code_analyst/vibe_audit.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "src/code_analyst/vibe_audit.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-tests-test-flow-map-py",
+      "label": "tests/test_flow_map.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "tests/test_flow_map.py",
       "summary": "由 import graph 发现的源码文件。"
     },
     {
@@ -211,6 +265,24 @@
       "summary": "由 import graph 发现的源码文件。"
     },
     {
+      "id": "file-tests-test-review-pack-py",
+      "label": "tests/test_review_pack.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "tests/test_review_pack.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "file-tests-test-script-check-py",
+      "label": "tests/test_script_check.py",
+      "kind": "module",
+      "group": "Import graph",
+      "layer": "Import graph",
+      "path": "tests/test_script_check.py",
+      "summary": "由 import graph 发现的源码文件。"
+    },
+    {
       "id": "file-tests-test-vibe-audit-py",
       "label": "tests/test_vibe_audit.py",
       "kind": "module",
@@ -218,6 +290,24 @@
       "layer": "Import graph",
       "path": "tests/test_vibe_audit.py",
       "summary": "由 import graph 发现的源码文件。"
+    },
+    {
+      "id": "flow-python-cli-src-code-analyst-cli-py",
+      "label": "Python CLI/runtime entry: src/code_analyst/cli.py",
+      "kind": "entrypoint",
+      "group": "Flow map",
+      "layer": "Flow map",
+      "path": "src/code_analyst/cli.py",
+      "summary": "`src/code_analyst/cli.py` has CLI-like filename.; `src/code_analyst/cli.py` contains CLI/runtime markers."
+    },
+    {
+      "id": "flow-python-cli-src-code-analyst-render-site-py",
+      "label": "Python CLI/runtime entry: src/code_analyst/render_site.py",
+      "kind": "entrypoint",
+      "group": "Flow map",
+      "layer": "Flow map",
+      "path": "src/code_analyst/render_site.py",
+      "summary": "`src/code_analyst/render_site.py` contains CLI/runtime markers."
     }
   ],
   "edges": [
@@ -247,7 +337,7 @@
     },
     {
       "from": "target",
-      "to": "entry-src-codebase-understanding-cli-py",
+      "to": "entry-src-code-analyst-cli-py",
       "label": "contains",
       "kind": "contains"
     },
@@ -288,100 +378,184 @@
       "kind": "examines"
     },
     {
-      "from": "file-src-codebase-understanding-cli-py",
-      "to": "file-src-codebase-understanding-init-py",
+      "from": "flow-map",
+      "to": "target",
+      "label": "maps",
+      "kind": "maps"
+    },
+    {
+      "from": "script-check",
+      "to": "target",
+      "label": "checks",
+      "kind": "checks"
+    },
+    {
+      "from": "file-src-code-analyst-cli-py",
+      "to": "file-src-code-analyst-init-py",
       "label": "imports",
       "kind": "imports"
     },
     {
-      "from": "file-src-codebase-understanding-cli-py",
-      "to": "file-src-codebase-understanding-import-graph-py",
+      "from": "file-src-code-analyst-cli-py",
+      "to": "file-src-code-analyst-flow-map-py",
       "label": "imports",
       "kind": "imports"
     },
     {
-      "from": "file-src-codebase-understanding-cli-py",
-      "to": "file-src-codebase-understanding-inventory-py",
+      "from": "file-src-code-analyst-cli-py",
+      "to": "file-src-code-analyst-import-graph-py",
       "label": "imports",
       "kind": "imports"
     },
     {
-      "from": "file-src-codebase-understanding-cli-py",
-      "to": "file-src-codebase-understanding-pack-py",
+      "from": "file-src-code-analyst-cli-py",
+      "to": "file-src-code-analyst-inventory-py",
       "label": "imports",
       "kind": "imports"
     },
     {
-      "from": "file-src-codebase-understanding-cli-py",
-      "to": "file-src-codebase-understanding-render-site-py",
+      "from": "file-src-code-analyst-cli-py",
+      "to": "file-src-code-analyst-pack-py",
       "label": "imports",
       "kind": "imports"
     },
     {
-      "from": "file-src-codebase-understanding-cli-py",
-      "to": "file-src-codebase-understanding-vibe-audit-py",
+      "from": "file-src-code-analyst-cli-py",
+      "to": "file-src-code-analyst-render-site-py",
       "label": "imports",
       "kind": "imports"
     },
     {
-      "from": "file-src-codebase-understanding-import-graph-py",
-      "to": "file-src-codebase-understanding-inventory-py",
+      "from": "file-src-code-analyst-cli-py",
+      "to": "file-src-code-analyst-review-pack-py",
       "label": "imports",
       "kind": "imports"
     },
     {
-      "from": "file-src-codebase-understanding-pack-py",
-      "to": "file-src-codebase-understanding-import-graph-py",
+      "from": "file-src-code-analyst-cli-py",
+      "to": "file-src-code-analyst-script-check-py",
       "label": "imports",
       "kind": "imports"
     },
     {
-      "from": "file-src-codebase-understanding-pack-py",
-      "to": "file-src-codebase-understanding-inventory-py",
+      "from": "file-src-code-analyst-cli-py",
+      "to": "file-src-code-analyst-vibe-audit-py",
       "label": "imports",
       "kind": "imports"
     },
     {
-      "from": "file-src-codebase-understanding-pack-py",
-      "to": "file-src-codebase-understanding-vibe-audit-py",
+      "from": "file-src-code-analyst-flow-map-py",
+      "to": "file-src-code-analyst-inventory-py",
       "label": "imports",
       "kind": "imports"
     },
     {
-      "from": "file-src-codebase-understanding-vibe-audit-py",
-      "to": "file-src-codebase-understanding-inventory-py",
+      "from": "file-src-code-analyst-import-graph-py",
+      "to": "file-src-code-analyst-inventory-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-code-analyst-pack-py",
+      "to": "file-src-code-analyst-flow-map-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-code-analyst-pack-py",
+      "to": "file-src-code-analyst-import-graph-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-code-analyst-pack-py",
+      "to": "file-src-code-analyst-inventory-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-code-analyst-pack-py",
+      "to": "file-src-code-analyst-script-check-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-code-analyst-pack-py",
+      "to": "file-src-code-analyst-vibe-audit-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-code-analyst-review-pack-py",
+      "to": "file-src-code-analyst-pack-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-src-code-analyst-vibe-audit-py",
+      "to": "file-src-code-analyst-inventory-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-tests-test-flow-map-py",
+      "to": "file-src-code-analyst-flow-map-py",
       "label": "imports",
       "kind": "imports"
     },
     {
       "from": "file-tests-test-import-graph-py",
-      "to": "file-src-codebase-understanding-import-graph-py",
+      "to": "file-src-code-analyst-import-graph-py",
       "label": "imports",
       "kind": "imports"
     },
     {
       "from": "file-tests-test-inventory-py",
-      "to": "file-src-codebase-understanding-inventory-py",
+      "to": "file-src-code-analyst-inventory-py",
       "label": "imports",
       "kind": "imports"
     },
     {
       "from": "file-tests-test-pack-py",
-      "to": "file-src-codebase-understanding-pack-py",
+      "to": "file-src-code-analyst-pack-py",
       "label": "imports",
       "kind": "imports"
     },
     {
       "from": "file-tests-test-render-site-py",
-      "to": "file-src-codebase-understanding-render-site-py",
+      "to": "file-src-code-analyst-render-site-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-tests-test-review-pack-py",
+      "to": "file-src-code-analyst-review-pack-py",
+      "label": "imports",
+      "kind": "imports"
+    },
+    {
+      "from": "file-tests-test-script-check-py",
+      "to": "file-src-code-analyst-script-check-py",
       "label": "imports",
       "kind": "imports"
     },
     {
       "from": "file-tests-test-vibe-audit-py",
-      "to": "file-src-codebase-understanding-vibe-audit-py",
+      "to": "file-src-code-analyst-vibe-audit-py",
       "label": "imports",
       "kind": "imports"
+    },
+    {
+      "from": "flow-map",
+      "to": "flow-python-cli-src-code-analyst-cli-py",
+      "label": "python-cli",
+      "kind": "maps"
+    },
+    {
+      "from": "flow-map",
+      "to": "flow-python-cli-src-code-analyst-render-site-py",
+      "label": "python-cli",
+      "kind": "maps"
     }
   ],
   "flows": [
@@ -406,6 +580,18 @@
           "node": "target",
           "path": "import_graph.json",
           "summary": "用文件级依赖边确认实际接线方向。"
+        },
+        {
+          "label": "建立 flow map",
+          "node": "flow-map",
+          "path": "flow_map.json",
+          "summary": "按项目类型提取 CLI、服务、前端、skill 等入口线索。"
+        },
+        {
+          "label": "检查脚本入口",
+          "node": "script-check",
+          "path": "script_check.json",
+          "summary": "验证声明的脚本、bin、Python entrypoint 是否指向真实目标。"
         },
         {
           "label": "阅读入口文件",
@@ -436,7 +622,17 @@
     {
       "claim": "Import graph edges are file-level static dependencies.",
       "path": "import_graph.json",
-      "detail": "16 internal edges"
+      "detail": "26 internal edges"
+    },
+    {
+      "claim": "Flow map entries are project-kind aware entrypoint hints.",
+      "path": "flow_map.json",
+      "detail": "2 flows"
+    },
+    {
+      "claim": "Script checks validate declared command targets without running them.",
+      "path": "script_check.json",
+      "detail": "1 checks"
     }
   ],
   "questions": []
