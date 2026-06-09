@@ -68,8 +68,10 @@ code-analyst import-graph TARGET --out OUTPUT_ROOT/import_graph.json
 code-analyst vibe-audit TARGET --out OUTPUT_ROOT/vibe_audit.json
 code-analyst pack TARGET --out OUTPUT_ROOT
 code-analyst review-pack TARGET --out OUTPUT_ROOT
+code-analyst review-pack --from-pack OUTPUT_ROOT
 code-analyst visual-pack TARGET --out OUTPUT_ROOT
 code-analyst render-site OUTPUT_ROOT/understanding_graph.json --out OUTPUT_ROOT/site
+code-analyst verify-site OUTPUT_ROOT/site --out OUTPUT_ROOT/site_verification.json
 ```
 
 Fallback when `code-analyst` is not on PATH:
@@ -84,6 +86,7 @@ PYTHONPATH=/Users/chihoyo/Project/CodeAnalyst/src python3 -m code_analyst.cli vi
 PYTHONPATH=/Users/chihoyo/Project/CodeAnalyst/src python3 -m code_analyst.cli pack TARGET --out OUTPUT_ROOT
 PYTHONPATH=/Users/chihoyo/Project/CodeAnalyst/src python3 -m code_analyst.cli review-pack TARGET --out OUTPUT_ROOT
 PYTHONPATH=/Users/chihoyo/Project/CodeAnalyst/src python3 -m code_analyst.cli visual-pack TARGET --out OUTPUT_ROOT
+PYTHONPATH=/Users/chihoyo/Project/CodeAnalyst/src python3 -m code_analyst.cli verify-site OUTPUT_ROOT/site --out OUTPUT_ROOT/site_verification.json
 ```
 
 ## Operating Modes
@@ -92,9 +95,9 @@ Pick the smallest mode that satisfies the request:
 
 - **Quick read**: answer in chat with a compact map, 1-2 Mermaid diagrams, key file references, and likely next files to read.
 - **Learning pack**: run `code-analyst pack`; create Markdown notes, `inventory.json`, `vibe_audit.json`, and `understanding_graph.json` under the central library.
-- **Visual pack**: run `code-analyst visual-pack`; create the learning pack plus a static visualization page at `OUTPUT_ROOT/site/index.html`.
+- **Visual pack**: run `code-analyst visual-pack`; create the learning pack plus a static visualization page at `OUTPUT_ROOT/site/index.html`. Add `--verify-site` or run `code-analyst verify-site OUTPUT_ROOT/site` when browser readiness matters.
 - **Optimization guide**: after understanding the system shape, rank improvements by reliability, maintainability, and product polish. Provide options and tradeoffs for the target project to implement.
-- **Review/design guide**: run `code-analyst review-pack` when persistent guidance is useful; explain what each major part does, identify likely bug risks and architecture debt, and propose refactor or design directions with evidence. Keep the deliverable as analysis unless the user moves into the target project and asks for implementation.
+- **Review/design guide**: run `code-analyst review-pack` when persistent guidance is useful; explain what each major part does, identify likely bug risks and architecture debt, and propose refactor or design directions with evidence. Use `code-analyst review-pack --from-pack OUTPUT_ROOT` to regenerate review files from existing evidence without rescanning. Keep the deliverable as analysis unless the user moves into the target project and asks for implementation.
 
 If the user asks for "clear diagrams", "visualization", "web page", or says they want to understand a codebase deeply, prefer **Learning pack** or **Visual pack** unless the target is tiny.
 
@@ -180,7 +183,7 @@ review.md
 review_pack.json
 ```
 
-Use `code-analyst visual-pack` to create `site/`; use `code-analyst render-site` to regenerate a site from an existing `understanding_graph.json`.
+Use `code-analyst visual-pack` to create `site/`; use `code-analyst render-site` to regenerate a site from an existing `understanding_graph.json`; use `code-analyst verify-site` to validate `site/index.html`, `site/data.json`, and embedded graph data before opening the page in a browser.
 
 ## References
 

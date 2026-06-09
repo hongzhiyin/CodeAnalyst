@@ -24,7 +24,10 @@ code-analyst flow-map /path/to/project
 code-analyst script-check /path/to/project
 code-analyst pack /path/to/project
 code-analyst review-pack /path/to/project
+code-analyst review-pack --from-pack /path/to/analysis-pack
 code-analyst visual-pack /path/to/project
+code-analyst visual-pack /path/to/project --verify-site
+code-analyst verify-site /path/to/analysis-pack/site
 ```
 
 ## Development

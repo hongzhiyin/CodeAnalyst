@@ -14,7 +14,7 @@
 | 主体形态 | `skill + CLI` | skill 保存判断框架，CLI 固化重复、确定性的扫描/审计/建包/验证步骤。 |
 | 默认写入位置 | `/Users/chihoyo/Project/CodeAnalyst/analyses/` | 保持被分析项目干净，方便跨项目积累学习产物。 |
 | CLI 名称 | `code-analyst` | 符合多词 CLI 惯例，并和产品名 `CodeAnalyst` 对齐。 |
-| 第一版核心命令 | `inventory` / `flow-map` / `script-check` / `import-graph` / `vibe-audit` / `pack` / `review-pack` / `visual-pack` / `render-site` / `doctor` | 覆盖快速盘点、多项目类型入口线索、脚本入口验证、静态依赖图、vibe coding 风险识别、分析包生成、review/重构/架构建议、静态可视化、环境自检。 |
+| 第一版核心命令 | `inventory` / `flow-map` / `script-check` / `import-graph` / `vibe-audit` / `pack` / `review-pack` / `visual-pack` / `render-site` / `verify-site` / `doctor` | 覆盖快速盘点、多项目类型入口线索、脚本入口验证、静态依赖图、vibe coding 风险识别、分析包生成、review/重构/架构建议、静态可视化、站点验证、环境自检。 |
 | review / refactor / architecture | 同项目内做 read-only review/design pack；真正改代码回到目标项目执行 | review/design 复用当前证据层；写入目标项目属于目标项目自己的迭代边界。 |
 | 运行依赖 | Python 标准库优先 | 避免在临时项目里先陷入依赖安装。 |
 | 产物语言 | 跟随用户语言；中文请求生成中文文档 | 和原 skill 契约保持一致，减少二次整理。 |
@@ -74,6 +74,7 @@ review_pack.json
 site/
   index.html
   data.json
+site_verification.json  # when --verify-site is used
 ```
 
 ## 5. Success Criteria
@@ -87,6 +88,8 @@ site/
 - `python3 -m code_analyst.cli vibe-audit <target>` 能给出温和、可证据追踪的 vibe coding 风险。
 - `python3 -m code_analyst.cli pack <target>` 能生成中央分析包。
 - `python3 -m code_analyst.cli review-pack <target>` 能生成只读 review、重构方向和架构设计建议。
+- `python3 -m code_analyst.cli review-pack --from-pack <pack-root>` 能不重扫目标、从已有 pack 重新生成 review 建议。
 - `python3 -m code_analyst.cli visual-pack <target>` 能生成中央分析包和静态站点。
+- `python3 -m code_analyst.cli verify-site <site>` 能验证静态站点的 HTML、`data.json`、内嵌 graph JSON 和浏览器数据启动脚本。
 - skill 能清楚告诉后续 Codex：什么时候调用哪个 CLI 命令，什么时候只读，什么时候进入优化建议。
 - `skillcli audit /Users/chihoyo/Project/CodeAnalyst --json` 不应有结构错误；portable wrapper、metadata、update lifecycle 相关 warning 应被及时修复。

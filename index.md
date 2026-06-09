@@ -17,7 +17,9 @@ PYTHONPATH=src python3 -m code_analyst.cli import-graph TARGET
 PYTHONPATH=src python3 -m code_analyst.cli vibe-audit TARGET
 PYTHONPATH=src python3 -m code_analyst.cli pack TARGET
 PYTHONPATH=src python3 -m code_analyst.cli review-pack TARGET
+PYTHONPATH=src python3 -m code_analyst.cli review-pack --from-pack OUTPUT_ROOT
 PYTHONPATH=src python3 -m code_analyst.cli visual-pack TARGET
+PYTHONPATH=src python3 -m code_analyst.cli verify-site OUTPUT_ROOT/site
 ```
 
 ## Structure
@@ -37,6 +39,7 @@ analyses/
     understanding_graph.json
     review.md
     review_pack.json
+    site_verification.json
     site/
       index.html
       data.json

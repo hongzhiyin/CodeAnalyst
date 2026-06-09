@@ -23,6 +23,7 @@
     vibe_audit.py
     pack.py
     render_site.py
+    verify_site.py
   skill/
     SKILL.md
     agents/
@@ -78,6 +79,7 @@ flowchart TD
 | `vibe_audit.py` | Heuristic checks for vibe-coded leftovers and missing verification signals. |
 | `pack.py` | Output-root selection and Markdown/JSON analysis pack generation. |
 | `render_site.py` | Static HTML renderer for `understanding_graph.json`; no external dependencies. |
+| `verify_site.py` | Deterministic validation for generated visual sites before browser inspection. |
 | `skill/SKILL.md` | Agent workflow: decide mode, call CLI, explain confirmed facts vs inferences. |
 | `scripts/update_cli.sh` | Source update lifecycle: install, test, check, sync, and verify. |
 
@@ -134,6 +136,7 @@ flowchart LR
   Markdown --> User[学习与优化建议]
   Review --> User
   Graph --> Site[site/index.html]
+  Site --> SiteVerify[site_verification.json]
 ```
 
 ## 5. External Inputs

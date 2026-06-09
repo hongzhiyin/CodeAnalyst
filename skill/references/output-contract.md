@@ -18,7 +18,14 @@ Default persistent artifacts to the central analysis library:
       diagrams.md
       open-questions.md
       inventory.json
+      flow_map.json
+      script_check.json
+      import_graph.json
+      vibe_audit.json
       understanding_graph.json
+      review.md
+      review_pack.json
+      site_verification.json
       site/
         index.html
         data.json
@@ -53,7 +60,14 @@ OUTPUT_ROOT/
   diagrams.md
   open-questions.md
   inventory.json
+  flow_map.json
+  script_check.json
+  import_graph.json
+  vibe_audit.json
   understanding_graph.json
+  review.md
+  review_pack.json
+  site_verification.json
   site/
     index.html
     data.json
@@ -217,4 +231,5 @@ Before delivery, verify:
 
 - `python3 -m json.tool OUTPUT_ROOT/understanding_graph.json`
 - `python3 -m json.tool OUTPUT_ROOT/site/data.json`
-- the embedded JSON in `OUTPUT_ROOT/site/index.html` parses; the renderer performs this check when it writes the page
+- `code-analyst verify-site OUTPUT_ROOT/site --out OUTPUT_ROOT/site_verification.json`
+- the embedded JSON in `OUTPUT_ROOT/site/index.html` parses; the renderer and `verify-site` both check this

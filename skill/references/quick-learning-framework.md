@@ -15,6 +15,8 @@ code-analyst script-check TARGET --out OUTPUT_ROOT/script_check.json
 code-analyst import-graph TARGET --out OUTPUT_ROOT/import_graph.json
 code-analyst vibe-audit TARGET --out OUTPUT_ROOT/vibe_audit.json
 code-analyst review-pack TARGET --out OUTPUT_ROOT
+code-analyst review-pack --from-pack OUTPUT_ROOT
+code-analyst verify-site OUTPUT_ROOT/site --out OUTPUT_ROOT/site_verification.json
 ```
 
 Capture:
@@ -92,7 +94,7 @@ Treat findings as leads. Confirm before deleting.
 
 Prefer this order:
 
-1. Verification: add a small test, typecheck, lint, smoke run, or browser check.
+1. Verification: add a small test, typecheck, lint, smoke run, `verify-site`, or browser check.
 2. Wiring: remove dead paths, connect half-wired controls, fix missing scripts.
 3. Boundaries: clarify modules, data ownership, and naming.
 4. Behavior: improve real user flows.

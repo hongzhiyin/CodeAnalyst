@@ -11,6 +11,14 @@ from .pack import _write, create_pack
 
 
 SEVERITY_RANK = {"high": 0, "medium": 1, "low": 2, "info": 3}
+PACK_JSON_FILES = {
+    "inventory": "inventory.json",
+    "import_graph": "import_graph.json",
+    "flow_map": "flow_map.json",
+    "script_check": "script_check.json",
+    "audit": "vibe_audit.json",
+    "graph": "understanding_graph.json",
+}
 
 
 def _evidence(path: str, detail: str) -> dict[str, str]:
@@ -231,6 +239,71 @@ def _architecture_advice(pack: dict[str, Any]) -> list[dict[str, Any]]:
     return advice
 
 
+def _project_kind_advice(pack: dict[str, Any]) -> list[dict[str, Any]]:
+    project_types = set(pack["inventory"].get("project_types", []))
+    advice: list[dict[str, Any]] = []
+
+    def add(project_type: str, title: str, recommendation: str, evidence_detail: str) -> None:
+        if project_type not in project_types:
+            return
+        advice.append(
+            _advice(
+                category="project-specific",
+                title=title,
+                severity="low",
+                confidence="medium",
+                implementation_risk="low",
+                why=f"`inventory.json` classified this target as {project_type}.",
+                recommendation=recommendation,
+                evidence=[_evidence("inventory.json", evidence_detail)],
+            )
+        )
+
+    add(
+        "Python project",
+        "Align Python package entrypoints with tests",
+        "Keep `pyproject.toml` scripts, package modules, and test commands in one documented loop before adding larger refactors.",
+        "project_types includes Python project",
+    )
+    add(
+        "frontend app",
+        "Trace frontend controls through state and rendered output",
+        "For each important UI path, verify handler -> state/data update -> visible result before treating the feature as complete.",
+        "project_types includes frontend app",
+    )
+    add(
+        "Node service",
+        "Confirm service startup and external boundary checks",
+        "Identify the server entrypoint, route registration, required environment variables, and one smoke check before changing service internals.",
+        "project_types includes Node service",
+    )
+    add(
+        "Node CLI",
+        "Treat package bin paths as the user-facing contract",
+        "Keep `package.json` bin targets, command help, and script-check output aligned so future users can find the real CLI path.",
+        "project_types includes Node CLI",
+    )
+    add(
+        "Codex skill",
+        "Keep skill instructions small and push deterministic work into scripts or CLI",
+        "Review `SKILL.md` for decision flow, then keep long contracts in references and repeatable checks in the companion CLI.",
+        "project_types includes Codex skill",
+    )
+    add(
+        "Codex plugin",
+        "Verify plugin manifest, skill files, and MCP surfaces together",
+        "Treat `.codex-plugin/plugin.json`, contributed skills, and callable tools as one contract, then add a smoke check for installation shape.",
+        "project_types includes Codex plugin",
+    )
+    add(
+        "Node or web project",
+        "Turn package scripts into a reliable verification ladder",
+        "Pick the smallest useful script check first, then document which script proves build, runtime, or smoke behavior.",
+        "project_types includes Node or web project",
+    )
+    return advice
+
+
 def _implementation_plan(advice_items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     plan: list[dict[str, Any]] = [
         {
@@ -278,6 +351,7 @@ def build_review(pack: dict[str, Any]) -> dict[str, Any]:
     advice_items.extend(_script_advice(pack))
     advice_items.extend(_vibe_advice(pack))
     advice_items.extend(_architecture_advice(pack))
+    advice_items.extend(_project_kind_advice(pack))
     advice_items.sort(key=lambda item: (SEVERITY_RANK.get(item["severity"], 99), item["category"], item["title"]))
 
     severity_counts = Counter(item["severity"] for item in advice_items)
@@ -285,7 +359,13 @@ def build_review(pack: dict[str, Any]) -> dict[str, Any]:
     return {
         "target": pack["inventory"]["root"],
         "output_root": pack["output_root"],
+        "source_pack_root": pack.get("source_pack_root", pack["output_root"]),
         "mode": "read-only analysis assistant",
+        "non_goals": [
+            "no patches",
+            "no target-project writes",
+            "no refactor execution outside the target project workflow",
+        ],
         "summary": {
             "project_types": pack["inventory"].get("project_types", []),
             "part_count": len(pack["inventory"].get("top_directories", {})),
@@ -340,10 +420,12 @@ def render_review_markdown(review: dict[str, Any]) -> str:
 ## 定位
 
 这是只读代码分析建议，不是目标项目 patch。真正修改请回到目标项目自己的测试、提交和迭代流程里完成。
+本项目不生成跨仓库补丁；它只给出证据化建议和实施顺序。
 
 ## 项目概况
 
 - Target: `{review['target']}`
+- Source pack: `{review['source_pack_root']}`
 - Project types: {", ".join(review['summary']['project_types'])}
 - Flow hints: {review['summary']['flow_count']}
 - Script checks: {review['summary']['script_check_count']}
@@ -363,6 +445,38 @@ def render_review_markdown(review: dict[str, Any]) -> str:
 """
 
 
+def _read_json(path: Path) -> dict[str, Any]:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise FileNotFoundError(f"Missing pack evidence file: {path}") from exc
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid JSON in pack evidence file: {path}: {exc}") from exc
+
+
+def load_pack(pack_root: Path | str, out: str | Path | None = None) -> dict[str, Any]:
+    source_root = Path(pack_root).expanduser().resolve()
+    if not source_root.exists():
+        raise FileNotFoundError(f"Pack root does not exist: {source_root}")
+    output_root = Path(out).expanduser().resolve() if out else source_root
+    pack = {
+        "output_root": str(output_root),
+        "source_pack_root": str(source_root),
+    }
+    for key, filename in PACK_JSON_FILES.items():
+        path = source_root / filename
+        if key == "graph" and not path.exists():
+            continue
+        pack[key] = _read_json(path)
+    return pack
+
+
+def _write_review_files(output_root: Path, review: dict[str, Any]) -> None:
+    output_root.mkdir(parents=True, exist_ok=True)
+    _write(output_root / "review_pack.json", json.dumps(review, indent=2, ensure_ascii=False))
+    _write(output_root / "review.md", render_review_markdown(review))
+
+
 def create_review_pack(
     target: Path | str,
     out: str | Path | None = None,
@@ -372,6 +486,13 @@ def create_review_pack(
     pack = create_pack(target, out=out, max_files=max_files, tree_depth=tree_depth)
     output_root = Path(pack["output_root"])
     review = build_review(pack)
-    _write(output_root / "review_pack.json", json.dumps(review, indent=2, ensure_ascii=False))
-    _write(output_root / "review.md", render_review_markdown(review))
+    _write_review_files(output_root, review)
+    return {**pack, "review": review}
+
+
+def create_review_from_pack(pack_root: Path | str, out: str | Path | None = None) -> dict[str, Any]:
+    pack = load_pack(pack_root, out=out)
+    output_root = Path(pack["output_root"])
+    review = build_review(pack)
+    _write_review_files(output_root, review)
     return {**pack, "review": review}

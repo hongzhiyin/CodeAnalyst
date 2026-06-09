@@ -3,7 +3,7 @@
 ## Current Progress
 
 **Phase**: Phase 1 - CodeAnalyst personal code analysis assistant
-**Current Step**: Step 5 naming migration ready for commit; memory/handoff refresh still pending
+**Current Step**: Phase 1 CLI/docs tail items implemented; external memory refresh pending approval
 
 ## Step 0 - Decide the Framework Shape
 
@@ -61,7 +61,7 @@
 - [x] Add route/component detection for common frontend stacks as first-pass flow hints.
 - [x] Add script/command verification without installing dependencies.
 - [x] Integrate or vendor the static site renderer into the source project.
-- [ ] Add optional browser verification for generated visual packs.
+- [x] Add optional browser verification for generated visual packs.
 - [x] Add `render-site` and `visual-pack` CLI commands.
 
 **Acceptance**:
@@ -111,15 +111,16 @@
 - [x] Rank findings by severity, evidence confidence, and implementation risk.
 - [x] Generate refactor/design proposals that cite inventory/import/flow/script evidence.
 - [x] Add output sections that explain "what each part does", "why it exists", "how it connects", and "what to improve next".
-- [ ] Keep write-capable refactoring outside this project unless a future project explicitly owns that workflow.
-- [ ] Improve language quality and project-kind-specific advice templates.
-- [ ] Add optional `--from-pack` mode to regenerate review guidance from an existing pack without rescanning the target.
+- [x] Keep write-capable refactoring outside this project unless a future project explicitly owns that workflow.
+- [x] Improve language quality and project-kind-specific advice templates.
+- [x] Add optional `--from-pack` mode to regenerate review guidance from an existing pack without rescanning the target.
 
 **Acceptance**:
 1. Review/design outputs stay read-only unless the user explicitly requests code edits.
 2. Recommendations distinguish bug risk, architecture debt, missing tests, and product/UX gaps.
 3. Outputs provide actionable options for the target project to implement, but do not present patches as this project's normal deliverable.
 4. `code-analyst review-pack TARGET` writes `review.md` and `review_pack.json`.
+5. `code-analyst review-pack --from-pack PACK_ROOT` regenerates review outputs from existing evidence without rescanning the target.
 
 ## Step 5 - CodeAnalyst naming migration
 
@@ -132,7 +133,7 @@
 - [x] Rename Python package to `code_analyst`.
 - [x] Rename installed skill target to `code-analyst`.
 - [x] Rename source checkout to `/Users/chihoyo/Project/CodeAnalyst`.
-- [ ] Update memory/handoff notes after any physical path rename.
+- [ ] Update external memory notes after the physical path rename; repo docs are refreshed, but writing to `~/.codex/memories` still needs approval.
 
 **Acceptance**:
 1. `code-analyst doctor` works from PATH.

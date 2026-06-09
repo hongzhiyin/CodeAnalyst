@@ -15,8 +15,9 @@ from .import_graph import create_import_graph, import_graph_summary, write_impor
 from .inventory import create_inventory, inventory_summary, write_inventory
 from .pack import create_pack
 from .render_site import render_site
-from .review_pack import create_review_pack
+from .review_pack import create_review_from_pack, create_review_pack
 from .script_check import check_scripts, script_check_summary, write_script_check
+from .verify_site import site_verification_summary, verify_site, write_site_verification
 from .vibe_audit import audit_summary, audit_vibe_project, write_audit
 
 
@@ -105,6 +106,18 @@ def cmd_render_site(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_verify_site(args: argparse.Namespace) -> int:
+    report = verify_site(args.site)
+    if args.out:
+        path = write_site_verification(report, args.out)
+        print(f"Wrote: {path}")
+    if args.json:
+        _print_json(report)
+    else:
+        print(site_verification_summary(report))
+    return 0 if report["ok"] else 1
+
+
 def cmd_visual_pack(args: argparse.Namespace) -> int:
     result = create_pack(args.target, out=args.out, max_files=args.max_files, tree_depth=args.tree_depth)
     output_root = Path(result["output_root"])
@@ -116,11 +129,22 @@ def cmd_visual_pack(args: argparse.Namespace) -> int:
     print(f"Flow hints: {result['flow_map']['summary']['flow_count']}")
     print(f"Script checks: {result['script_check']['summary']['check_count']}")
     print(f"Vibe findings: {result['audit']['summary']['finding_count']}")
+    if args.verify_site:
+        report = verify_site(index_path.parent)
+        write_site_verification(report, output_root / "site_verification.json")
+        print(site_verification_summary(report))
+        if not report["ok"]:
+            return 1
     return 0
 
 
 def cmd_review_pack(args: argparse.Namespace) -> int:
-    result = create_review_pack(args.target, out=args.out, max_files=args.max_files, tree_depth=args.tree_depth)
+    if args.from_pack:
+        result = create_review_from_pack(args.from_pack, out=args.out)
+    else:
+        if not args.target:
+            raise SystemExit("review-pack requires TARGET unless --from-pack is supplied")
+        result = create_review_pack(args.target, out=args.out, max_files=args.max_files, tree_depth=args.tree_depth)
     output_root = Path(result["output_root"])
     review = result["review"]
     print(f"Wrote review pack: {output_root}")
@@ -218,16 +242,24 @@ def build_parser() -> argparse.ArgumentParser:
     render.add_argument("--locale", help="Override UI locale, for example zh-CN or en")
     render.set_defaults(func=cmd_render_site)
 
+    verify = sub.add_parser("verify-site", help="Verify a generated visual site before opening it in a browser.")
+    verify.add_argument("site", help="Path to site/ or site/index.html")
+    verify.add_argument("--out", help="Write verification JSON to this path")
+    verify.add_argument("--json", action="store_true", help="Print JSON instead of a text summary")
+    verify.set_defaults(func=cmd_verify_site)
+
     visual = sub.add_parser("visual-pack", help="Generate a learning pack and render its static site.")
     visual.add_argument("target", help="Folder or file to inspect")
     visual.add_argument("--out", help="Output directory. Defaults to the central analysis library.")
     visual.add_argument("--locale", help="Override UI locale, for example zh-CN or en")
+    visual.add_argument("--verify-site", action="store_true", help="Verify the generated site and write site_verification.json")
     visual.add_argument("--max-files", type=int, default=3000)
     visual.add_argument("--tree-depth", type=int, default=3)
     visual.set_defaults(func=cmd_visual_pack)
 
     review = sub.add_parser("review-pack", help="Generate read-only review, refactor, and architecture guidance.")
-    review.add_argument("target", help="Folder or file to inspect")
+    review.add_argument("target", nargs="?", help="Folder or file to inspect")
+    review.add_argument("--from-pack", help="Regenerate review files from an existing pack root without rescanning the target")
     review.add_argument("--out", help="Output directory. Defaults to the central analysis library.")
     review.add_argument("--max-files", type=int, default=3000)
     review.add_argument("--tree-depth", type=int, default=3)
