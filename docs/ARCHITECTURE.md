@@ -41,7 +41,17 @@
   analyses/
 ```
 
-已安装 skill 仍位于：
+全局用户 skill 位于 Codex app 官方 skill discovery 路径：
+
+```text
+/Users/chihoyo/.agents/skills/code-analyst/
+  SKILL.md
+  agents/openai.yaml
+  bin/code-analyst
+  references/
+```
+
+Codex runtime copy 也同步到：
 
 ```text
 /Users/chihoyo/.codex/skills/code-analyst/
@@ -51,7 +61,7 @@
   references/
 ```
 
-`skill/` 是可同步 source-of-truth；已安装 skill 是生成副本，不再作为编辑入口。
+`skill/` 是可同步 source-of-truth；两个已安装 skill 目录都是生成副本，不再作为编辑入口。
 
 ## 2. Layers
 
@@ -95,10 +105,11 @@ The wrappers set `PYTHONPATH=/Users/chihoyo/Project/CodeAnalyst/src` and execute
 
 ### 3.2 Installed Skill Wrapper
 
-`scripts/sync_skill.sh --force` replaces the installed Codex skill copy with
+`scripts/sync_skill.sh --force` replaces both installed skill copies with
 `skill/`, writes `.code-analyst-skill-source`, and generates:
 
 ```text
+/Users/chihoyo/.agents/skills/code-analyst/bin/code-analyst
 /Users/chihoyo/.codex/skills/code-analyst/bin/code-analyst
 ```
 

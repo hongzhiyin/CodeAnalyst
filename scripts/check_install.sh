@@ -6,3 +6,7 @@ PYTHONPATH="$ROOT/src" python3 -m code_analyst.cli doctor
 PYTHONPATH="$ROOT/src" python3 -m unittest discover -s "$ROOT/tests"
 command -v code-analyst >/dev/null
 code-analyst --version
+test -f "${CODEX_HOME:-$HOME/.codex}/skills/code-analyst/SKILL.md"
+test -x "${CODEX_HOME:-$HOME/.codex}/skills/code-analyst/bin/code-analyst"
+test -f "${AGENTS_HOME:-$HOME/.agents}/skills/code-analyst/SKILL.md"
+test -x "${AGENTS_HOME:-$HOME/.agents}/skills/code-analyst/bin/code-analyst"

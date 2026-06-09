@@ -19,7 +19,7 @@
 | 运行依赖 | Python 标准库优先 | 避免在临时项目里先陷入依赖安装。 |
 | 产物语言 | 跟随用户语言；中文请求生成中文文档 | 和原 skill 契约保持一致，减少二次整理。 |
 | 外部最佳实践吸收 | 只吸收可操作原则，不复制长篇上下文 | 降低常驻指令膨胀带来的成本和误导。 |
-| installed skill portability | source skill 同步时生成 `bin/code-analyst`，skill 声明 `metadata.requires.bins` 和 `cliHelp`，fallback 使用 `CODE_ANALYST_PROJECT_DIR` | 后续 agent 可以从 PATH、skill-local wrapper 或 source checkout 稳定找到 CLI。 |
+| installed skill portability | source skill 同步时写入 `~/.agents/skills/code-analyst` 和 `~/.codex/skills/code-analyst`，生成 `bin/code-analyst`，skill 声明 `metadata.requires.bins` 和 `cliHelp`，fallback 使用 `CODE_ANALYST_PROJECT_DIR` | 后续 agent 可以从 Codex app skill discovery、PATH、skill-local wrapper 或 source checkout 稳定找到 CLI。 |
 
 ## 3. Invariants
 
@@ -35,7 +35,7 @@
 
 **#6** Improvement guidance invariant: 分析包不能只解释“现在是什么”，还要给出下一步优化路线：先修可信度/验证，再修架构，再扩功能。
 
-**#7** Installed skill wrapper invariant: 已同步的 agent skill copy 必须包含 `bin/code-analyst`，并且该 wrapper 指向 `/Users/chihoyo/Project/CodeAnalyst` 这个 source checkout；installed skill 不是可编辑 source-of-truth。
+**#7** Installed skill wrapper invariant: 已同步的 `~/.agents/skills/code-analyst` 和 `~/.codex/skills/code-analyst` copy 必须包含 `bin/code-analyst`，并且该 wrapper 指向 `/Users/chihoyo/Project/CodeAnalyst` 这个 source checkout；installed skill 不是可编辑 source-of-truth。
 
 **#8** Recommendation-only invariant: 本项目可以提出 review、重构、架构设计和优化路线，但默认不生成会直接修改目标项目的 patch；落地修改应在目标项目自己的上下文、测试和版本控制中进行。
 
@@ -91,5 +91,6 @@ site_verification.json  # when --verify-site is used
 - `python3 -m code_analyst.cli review-pack --from-pack <pack-root>` 能不重扫目标、从已有 pack 重新生成 review 建议。
 - `python3 -m code_analyst.cli visual-pack <target>` 能生成中央分析包和静态站点。
 - `python3 -m code_analyst.cli verify-site <site>` 能验证静态站点的 HTML、`data.json`、内嵌 graph JSON 和浏览器数据启动脚本。
+- `./scripts/update_cli.sh --force` 能在测试通过后同步 `~/.agents/skills/code-analyst` 和 `~/.codex/skills/code-analyst`。
 - skill 能清楚告诉后续 Codex：什么时候调用哪个 CLI 命令，什么时候只读，什么时候进入优化建议。
 - `skillcli audit /Users/chihoyo/Project/CodeAnalyst --json` 不应有结构错误；portable wrapper、metadata、update lifecycle 相关 warning 应被及时修复。

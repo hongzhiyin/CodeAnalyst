@@ -163,9 +163,15 @@ def cmd_doctor(args: argparse.Namespace) -> int:
     checks.append(("rg", shutil.which("rg") is not None, shutil.which("rg") or "not found"))
     checks.append(("code-analyst command", shutil.which("code-analyst") is not None, shutil.which("code-analyst") or "not found"))
 
-    installed_skill = Path("/Users/chihoyo/.codex/skills/code-analyst")
-    checks.append(("installed skill", installed_skill.exists(), str(installed_skill)))
-    checks.append(("installed skill-local code-analyst wrapper", (installed_skill / "bin/code-analyst").exists(), str(installed_skill / "bin/code-analyst")))
+    home = Path.home()
+    codex_home = Path(os.environ.get("CODEX_HOME", str(home / ".codex")))
+    agents_home = Path(os.environ.get("AGENTS_HOME", str(home / ".agents")))
+    codex_skill = codex_home / "skills" / "code-analyst"
+    agents_skill = agents_home / "skills" / "code-analyst"
+    checks.append(("codex runtime skill", codex_skill.exists(), str(codex_skill)))
+    checks.append(("codex runtime skill-local code-analyst wrapper", (codex_skill / "bin/code-analyst").exists(), str(codex_skill / "bin/code-analyst")))
+    checks.append(("global user skill", agents_skill.exists(), str(agents_skill)))
+    checks.append(("global user skill-local code-analyst wrapper", (agents_skill / "bin/code-analyst").exists(), str(agents_skill / "bin/code-analyst")))
 
     library = Path("/Users/chihoyo/Project/CodeAnalyst/analyses")
     checks.append(("analysis library", library.exists(), str(library)))
@@ -177,7 +183,6 @@ def cmd_doctor(args: argparse.Namespace) -> int:
         if not ok and name not in {
             "rg",
             "code-analyst command",
-            "installed skill-local code-analyst wrapper",
         }:
             failures += 1
 

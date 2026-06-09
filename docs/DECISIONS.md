@@ -445,7 +445,57 @@ Choose option 3.
 - `docs/SPEC.md`
 - `docs/ARCHITECTURE.md`
 - `docs/ROADMAP.md`
-- `scripts/install_cli.sh`
+
+## D-010 - Sync CodeAnalyst to global user skills and Codex runtime skills
+
+**Status**: accepted
+
+**Date**: 2026-06-10
+
+**Context**:
+
+`code-analyst` was synced only to `~/.codex/skills/code-analyst`. The CLI and
+current thread could use it, but Codex app skill discovery and slash/skill UI
+expect user-authored skills under `~/.agents/skills`. This made the skill work
+as a local runtime helper while still being hard to find from the app UI.
+
+**Options**:
+
+1. Keep syncing only to `~/.codex/skills`.
+2. Manually copy the current skill to `~/.agents/skills` once.
+3. Make `scripts/sync_skill.sh` sync both `~/.agents/skills/code-analyst` and
+   `~/.codex/skills/code-analyst` by default, and keep `scripts/update_cli.sh`
+   as the one update lifecycle.
+
+**Chosen**:
+
+Choose option 3.
+
+**Rationale**:
+
+- `~/.agents/skills` is the global user skill discovery path for Codex app.
+- `~/.codex/skills` remains useful for existing local runtime behavior in this
+  environment.
+- A single source checkout and one sync script avoid stale installed copies.
+- Running tests before sync keeps broken source changes from being promoted to
+  the global skill directories.
+
+**Risks**:
+
+- The sync script writes outside the repository and therefore requires explicit
+  approval in sandboxed sessions.
+- Existing unmarked skill folders are not overwritten unless `--force` is used,
+  preserving manually maintained directories.
+
+**Affected Docs/Code**:
+
 - `scripts/sync_skill.sh`
+- `scripts/update_cli.sh`
 - `scripts/check_install.sh`
+- `src/code_analyst/cli.py`
+- `docs/SPEC.md`
+- `docs/ARCHITECTURE.md`
+- `docs/ROADMAP.md`
+- `README.md`
 - `pyproject.toml`
+- `src/code_analyst/__init__.py`

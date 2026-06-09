@@ -3,7 +3,7 @@
 ## Current Progress
 
 **Phase**: Phase 1 - CodeAnalyst personal code analysis assistant
-**Current Step**: Phase 1 CLI/docs tail items implemented; external memory refresh pending approval
+**Current Step**: Global skill sync update implemented; verification and commit pending
 
 ## Step 0 - Decide the Framework Shape
 
@@ -79,13 +79,14 @@
 - [x] Add skill frontmatter metadata for required `code-analyst` bin and `cliHelp`.
 - [x] Document CLI resolution through PATH, installed `bin/code-analyst`, and `CODE_ANALYST_PROJECT_DIR`.
 - [x] Generate installed skill-local `bin/code-analyst` during sync.
+- [x] Sync both Codex app user skill discovery path `~/.agents/skills/code-analyst` and Codex runtime path `~/.codex/skills/code-analyst`.
 - [x] Add a project-local update lifecycle script.
 - [x] Add source `README.md` and `skill/agents/openai.yaml`.
 
 **Acceptance**:
 1. `skillcli audit /Users/chihoyo/Project/CodeAnalyst --json` reports 0 errors and 0 warnings.
 2. `./scripts/update_cli.sh --force` installs, tests, checks, syncs, and checks again.
-3. `code-analyst doctor` reports the installed skill-local wrapper when sync has run.
+3. `code-analyst doctor` reports both installed skill-local wrappers when sync has run.
 
 ## Step 3b - Add multi-kind flow and script evidence
 

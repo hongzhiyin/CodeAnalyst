@@ -14,6 +14,8 @@ This repository is both:
 
 - the source checkout for the `code-analyst` skill and CLI
 - the central library for generated analysis packs under `analyses/`
+- the source copied into global user skills under `~/.agents/skills/code-analyst`
+  and the Codex runtime copy under `~/.codex/skills/code-analyst`
 
 ## Quick Start
 
@@ -43,6 +45,10 @@ After source changes, run the full local lifecycle:
 ```bash
 ./scripts/update_cli.sh --force
 ```
+
+`update_cli.sh` installs the CLI wrapper, runs tests, and syncs both skill
+copies so Codex app skill discovery and existing Codex runtime paths stay in
+step.
 
 ## Project Map
 
