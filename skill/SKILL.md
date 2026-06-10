@@ -2,7 +2,7 @@
 name: code-analyst
 description: Use CodeAnalyst when the user wants to understand how a local folder, codebase, generated app, Codex skill, plugin, script collection, or small software project works. Produce evidence-backed architecture notes, diagrams, review/refactor guidance, and optional local visualization pages. Default to read-only target analysis and write artifacts to the central CodeAnalyst library unless the user explicitly requests another location.
 metadata:
-  short-description: CodeAnalyst: explain codebases with diagrams, audits, and review guidance
+  short-description: "CodeAnalyst: explain codebases with diagrams, audits, and review guidance"
   requires:
     bins: ["code-analyst"]
   cliHelp: "code-analyst --help"
