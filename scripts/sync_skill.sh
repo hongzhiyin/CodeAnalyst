@@ -4,7 +4,12 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MARKER=".code-analyst-skill-source"
 FORCE=0
+DRY_RUN=0
 TARGETS="${CODE_ANALYST_SYNC_TARGETS:-codex,agents}"
+
+usage() {
+  echo "Usage: sync_skill.sh [--targets codex,agents] [--force] [--dry-run]" >&2
+}
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -12,12 +17,25 @@ while [ "$#" -gt 0 ]; do
       FORCE=1
       shift
       ;;
+    --dry-run)
+      DRY_RUN=1
+      shift
+      ;;
     --targets)
       TARGETS="${2:?--targets requires a comma-separated target list}"
       shift 2
       ;;
+    --targets=*)
+      TARGETS="${1#--targets=}"
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
     *)
       echo "Unknown argument: $1" >&2
+      usage
       exit 2
       ;;
   esac
@@ -59,6 +77,11 @@ sync_one() {
   local old_target
   target="$(target_dir "$name")"
   old_target="$(old_target_dir "$name")"
+
+  if [ "$DRY_RUN" -eq 1 ]; then
+    echo "$name: would sync to $target"
+    return 0
+  fi
 
   if [ -e "$target" ] && [ ! -f "$target/$MARKER" ]; then
     if [ "$FORCE" -ne 1 ]; then

@@ -3,7 +3,7 @@
 ## Current Progress
 
 **Phase**: Phase 1 - CodeAnalyst personal code analysis assistant
-**Current Step**: Global skill sync update implemented; verification and commit pending
+**Current Step**: Step 6 - Native install and public release maintenance
 
 ## Step 0 - Decide the Framework Shape
 
@@ -141,3 +141,23 @@
 2. Installed skill copy is `/Users/chihoyo/.codex/skills/code-analyst` and includes `bin/code-analyst`.
 3. Old generated PATH wrappers are removed.
 4. Source checkout lives at `/Users/chihoyo/Project/CodeAnalyst`.
+
+## Step 6 - Native install and public release maintenance
+
+**Goal**: 让 CodeAnalyst 支持 public GitHub Releases/native install，同时把 source checkout 安装改成 skill-cli-kit 风格的项目内 wrapper。
+
+**Tasks**:
+- [x] Make existing GitHub repo `hongzhiyin/CodeAnalyst` public.
+- [x] Replace `/opt/homebrew/bin` source wrapper install with `.venv/bin/code-analyst`.
+- [x] Add `code-analyst sync-skill` thin delegation to `scripts/sync_skill.sh`.
+- [x] Add release packaging assets: `scripts/package_release.sh`, `scripts/install_remote.sh`, manifest, checksum, tarball flow.
+- [x] Add `code-analyst update` to run the native installer/update path.
+- [x] Update README, skill, SPEC, ARCHITECTURE, ROADMAP, and DECISIONS.
+- [ ] Publish a versioned GitHub Release after final local verification and commit.
+
+**Acceptance**:
+1. `gh repo view hongzhiyin/CodeAnalyst --json visibility` reports `PUBLIC`.
+2. `./scripts/install_cli.sh` creates `.venv/bin/code-analyst` and no longer installs the source wrapper under `/opt/homebrew/bin`.
+3. `skillcli audit /Users/chihoyo/Project/CodeAnalyst --json` reports 0 errors and 0 warnings.
+4. `scripts/package_release.sh` creates artifact, sha256, manifest, and installer assets.
+5. `scripts/install_remote.sh --release-base-url file://...` installs a local native release and `~/.local/bin/code-analyst doctor` succeeds.

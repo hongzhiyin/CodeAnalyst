@@ -1,0 +1,68 @@
+{
+  "ok": true,
+  "summary": {
+    "project": "/Users/chihoyo/Project/CodeAnalyst",
+    "docs_dir": "/Users/chihoyo/Project/CodeAnalyst/docs",
+    "generated_dir": "/Users/chihoyo/Project/CodeAnalyst/docs/_generated/docdev",
+    "decision_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "roadmap_steps": [
+      "Step 0 - Decide the Framework Shape",
+      "Step 1 - Build CLI Foundation",
+      "Step 2 - Upgrade the Companion Skill",
+      "Step 3 - Visual and Static Analysis Expansion",
+      "Step 3a - Adopt skill-cli-kit portability contract",
+      "Step 3b - Add multi-kind flow and script evidence",
+      "Step 4 - Analysis-assistant review and design packs",
+      "Step 5 - CodeAnalyst naming migration",
+      "Step 6 - Native install and public release maintenance"
+    ],
+    "invariant_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "change_packets": [
+      {
+        "path": "/Users/chihoyo/Project/CodeAnalyst/docs/changes/2026-06-15-native-install-release-public-repo",
+        "architecture": "present",
+        "decision_ids": [
+          1
+        ],
+        "roadmap_steps": [
+          "Step 0 - 建立需求工作包",
+          "Step 1 - 澄清需求与范围",
+          "Step 2 - 调研既有实现",
+          "Step 3 - 形成并确认方案",
+          "Step 4 - 实施代码与测试",
+          "Step 5 - 验证与收尾"
+        ],
+        "invariant_ids": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    ]
+  },
+  "findings": []
+}

@@ -499,3 +499,68 @@ Choose option 3.
 - `README.md`
 - `pyproject.toml`
 - `src/code_analyst/__init__.py`
+
+## D-011 - Use project-local source wrapper and native release installer
+
+**Status**: accepted
+
+**Date**: 2026-06-15
+
+**Context**:
+
+The existing source checkout install wrote `/opt/homebrew/bin/code-analyst`,
+which made local development convenient but mixed source checkout maintenance
+with global command state. The user now wants the existing GitHub repository to
+be public, wants the local wrapper install style removed, and wants a
+skill-cli-kit-like install/update path with local smoke verification.
+
+**Options**:
+
+1. Keep only `/opt/homebrew/bin/code-analyst` as the source checkout wrapper.
+2. Use only a native release installer and remove source checkout helper
+   install completely.
+3. Use a project-local `.venv/bin/code-analyst` wrapper for source development,
+   plus a GitHub Releases/native installer under `~/.local/share/code-analyst`
+   and `~/.local/bin/code-analyst` for normal installs.
+
+**Chosen**:
+
+Choose option 3.
+
+**Rationale**:
+
+- It follows the skill-cli-kit source checkout pattern without mutating system
+  Python or relying on a global Homebrew bin wrapper for development.
+- It gives normal users a stable native install/update path from public GitHub
+  Releases.
+- `code-analyst sync-skill` can delegate to `scripts/sync_skill.sh`, keeping
+  sync target behavior in one script instead of duplicating it in CLI code.
+- Keeping source and native installs distinct makes doctor/check output easier
+  to reason about.
+
+**Risks**:
+
+- Users with `~/.local/bin` missing from PATH must call
+  `~/.local/bin/code-analyst` directly or add that directory themselves.
+- Existing shells may still cache the old `/opt/homebrew/bin/code-analyst`
+  path. Mitigation: `scripts/install_cli.sh` removes recognized old generated
+  wrappers and `doctor` reports the current launcher paths.
+- Native release installation changes installed skill wrappers to point at the
+  native release root when sync runs from the native launcher; source checkout
+  sync changes them back to the checkout. Mitigation: wrapper markers and
+  `doctor` make the active root visible.
+
+**Affected Docs/Code**:
+
+- `README.md`
+- `docs/SPEC.md`
+- `docs/ARCHITECTURE.md`
+- `docs/ROADMAP.md`
+- `scripts/install_cli.sh`
+- `scripts/install_remote.sh`
+- `scripts/package_release.sh`
+- `scripts/sync_skill.sh`
+- `scripts/check_install.sh`
+- `scripts/update_cli.sh`
+- `src/code_analyst/cli.py`
+- `skill/SKILL.md`

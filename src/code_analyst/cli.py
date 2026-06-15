@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -20,9 +21,19 @@ from .script_check import check_scripts, script_check_summary, write_script_chec
 from .verify_site import site_verification_summary, verify_site, write_site_verification
 from .vibe_audit import audit_summary, audit_vibe_project, write_audit
 
+TOOL_NAME = "code-analyst"
+SOURCE_ENV = "CODE_ANALYST_PROJECT_DIR"
+
 
 def _print_json(data: object) -> None:
     print(json.dumps(data, indent=2, ensure_ascii=False))
+
+
+def project_root() -> Path:
+    env = os.environ.get(SOURCE_ENV)
+    if env:
+        return Path(env).expanduser().resolve()
+    return Path(__file__).resolve().parents[2]
 
 
 def cmd_inventory(args: argparse.Namespace) -> int:
@@ -157,13 +168,59 @@ def cmd_review_pack(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_sync_skill(args: argparse.Namespace) -> int:
+    root = project_root()
+    script = root / "scripts" / "sync_skill.sh"
+    if not script.exists():
+        print(f"missing sync script: {script}", file=sys.stderr)
+        return 1
+    command = [str(script), "--targets", args.targets]
+    if args.force:
+        command.append("--force")
+    if args.dry_run:
+        command.append("--dry-run")
+    return subprocess.run(command, check=False).returncode
+
+
+def cmd_update(args: argparse.Namespace) -> int:
+    root = project_root()
+    installer = root / "scripts" / "install_remote.sh"
+    if not installer.exists():
+        print(f"missing remote installer: {installer}", file=sys.stderr)
+        return 1
+    command = [str(installer)]
+    if args.version:
+        command.extend(["--version", args.version])
+    if args.release_base_url:
+        command.extend(["--release-base-url", args.release_base_url])
+    if args.install_root:
+        command.extend(["--install-root", args.install_root])
+    if args.bin_dir:
+        command.extend(["--bin-dir", args.bin_dir])
+    command.extend(["--targets", args.targets])
+    command.append("--sync-skill" if args.sync_skill else "--no-sync-skill")
+    return subprocess.run(command, check=False).returncode
+
+
 def cmd_doctor(args: argparse.Namespace) -> int:
     checks: list[tuple[str, bool, str]] = []
+    root = project_root()
+    home = Path.home()
+    native_install_root = Path(os.environ.get("CODE_ANALYST_INSTALL_ROOT", str(home / ".local" / "share" / "code-analyst"))).expanduser()
+    native_releases = native_install_root / "releases"
+    is_native_release_root = native_releases in root.parents
+    source_wrapper = root / ".venv" / "bin" / "code-analyst"
     checks.append(("python", sys.version_info >= (3, 10), sys.version.split()[0]))
     checks.append(("rg", shutil.which("rg") is not None, shutil.which("rg") or "not found"))
     checks.append(("code-analyst command", shutil.which("code-analyst") is not None, shutil.which("code-analyst") or "not found"))
+    checks.append(("source root", (root / "src" / "code_analyst").exists(), str(root)))
+    if is_native_release_root:
+        checks.append(("source local wrapper", True, "not expected for native release root"))
+    else:
+        checks.append(("source local wrapper", source_wrapper.exists(), str(source_wrapper)))
+    checks.append(("native launcher", (home / ".local" / "bin" / "code-analyst").exists(), str(home / ".local" / "bin" / "code-analyst")))
+    checks.append(("native current", (home / ".local" / "share" / "code-analyst" / "current").exists(), str(home / ".local" / "share" / "code-analyst" / "current")))
 
-    home = Path.home()
     codex_home = Path(os.environ.get("CODEX_HOME", str(home / ".codex")))
     agents_home = Path(os.environ.get("AGENTS_HOME", str(home / ".agents")))
     codex_skill = codex_home / "skills" / "code-analyst"
@@ -180,10 +237,7 @@ def cmd_doctor(args: argparse.Namespace) -> int:
     for name, ok, detail in checks:
         mark = "ok" if ok else "missing"
         print(f"{mark:7} {name}: {detail}")
-        if not ok and name not in {
-            "rg",
-            "code-analyst command",
-        }:
+        if not ok and name in {"python", "source root"}:
             failures += 1
 
     if failures:
@@ -269,6 +323,22 @@ def build_parser() -> argparse.ArgumentParser:
     review.add_argument("--max-files", type=int, default=3000)
     review.add_argument("--tree-depth", type=int, default=3)
     review.set_defaults(func=cmd_review_pack)
+
+    sync = sub.add_parser("sync-skill", help="Sync installed skill copies via scripts/sync_skill.sh.")
+    sync.add_argument("--targets", default="codex,agents", help="Comma-separated sync targets, for example codex,agents.")
+    sync.add_argument("--force", action="store_true", help="Replace marked or explicitly approved existing targets.")
+    sync.add_argument("--dry-run", action="store_true", help="Print planned targets without writing.")
+    sync.set_defaults(func=cmd_sync_skill)
+
+    update = sub.add_parser("update", help="Install or update the native release from GitHub Releases or a release asset directory.")
+    update.add_argument("--version", help="Install a specific release version. Defaults to latest.")
+    update.add_argument("--release-base-url", help="Manifest/artifact base URL, including file:// directories for smoke tests.")
+    update.add_argument("--install-root", help="Native install root. Defaults to ~/.local/share/code-analyst.")
+    update.add_argument("--bin-dir", help="Launcher directory. Defaults to ~/.local/bin.")
+    update.add_argument("--targets", default="codex,agents", help="Skill sync targets used after install/update.")
+    update.add_argument("--sync-skill", dest="sync_skill", action="store_true", default=True, help="Refresh installed skill targets after update. Default.")
+    update.add_argument("--no-sync-skill", dest="sync_skill", action="store_false", help="Skip refreshing installed skill targets.")
+    update.set_defaults(func=cmd_update)
 
     doctor = sub.add_parser("doctor", help="Check local CLI and installed-skill readiness.")
     doctor.set_defaults(func=cmd_doctor)

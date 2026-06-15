@@ -34,6 +34,8 @@
       diagram-recipes.md
   scripts/
     install_cli.sh
+    install_remote.sh
+    package_release.sh
     sync_skill.sh
     check_install.sh
     update_cli.sh
@@ -80,7 +82,7 @@ flowchart TD
 
 | Module | Responsibility |
 |---|---|
-| `cli.py` | argparse command surface and user-facing command dispatch. |
+| `cli.py` | argparse command surface, user-facing command dispatch, `sync-skill` delegation, and native `update` dispatch. |
 | `flow_map.py` | Project-kind aware entrypoint and flow hint discovery for CLI, service, frontend, Node scripts, and skills. |
 | `import_graph.py` | File-level static import graph extraction for Python and JS/TS. |
 | `inventory.py` | Deterministic project inventory: files, manifests, entrypoints, types, top directories. |
@@ -91,17 +93,35 @@ flowchart TD
 | `render_site.py` | Static HTML renderer for `understanding_graph.json`; no external dependencies. |
 | `verify_site.py` | Deterministic validation for generated visual sites before browser inspection. |
 | `skill/SKILL.md` | Agent workflow: decide mode, call CLI, explain confirmed facts vs inferences. |
-| `scripts/update_cli.sh` | Source update lifecycle: install, test, check, sync, and verify. |
+| `scripts/install_cli.sh` | Source checkout install: create `.venv/bin/code-analyst` and remove known legacy global wrappers. |
+| `scripts/package_release.sh` | Build native release tarball, checksum, manifest, and installer assets. |
+| `scripts/install_remote.sh` | Install GitHub/file release artifacts into the native `~/.local/share/code-analyst` layout. |
+| `scripts/update_cli.sh` | Source update lifecycle: install, test, sync, and verify. |
 
 ## 3.1 Installed Commands
 
-`scripts/install_cli.sh` installs one wrapper:
+`scripts/install_cli.sh` installs one project-local source checkout wrapper:
 
 ```text
-/opt/homebrew/bin/code-analyst
+/Users/chihoyo/Project/CodeAnalyst/.venv/bin/code-analyst
 ```
 
-The wrappers set `PYTHONPATH=/Users/chihoyo/Project/CodeAnalyst/src` and execute `python3 -m code_analyst.cli`.
+The wrapper sets `CODE_ANALYST_PROJECT_DIR=/Users/chihoyo/Project/CodeAnalyst`,
+sets `PYTHONPATH=/Users/chihoyo/Project/CodeAnalyst/src`, and executes
+`python3 -m code_analyst.cli`. It also removes recognized old global
+CodeAnalyst wrappers from `/opt/homebrew/bin` when they contain the generated
+`python3 -m code_analyst.cli` command.
+
+Native release installs use:
+
+```text
+~/.local/share/code-analyst/releases/<version>/
+~/.local/share/code-analyst/current
+~/.local/bin/code-analyst
+```
+
+The native launcher points `CODE_ANALYST_PROJECT_DIR` and `PYTHONPATH` at
+`~/.local/share/code-analyst/current`.
 
 ### 3.2 Installed Skill Wrapper
 
@@ -113,8 +133,8 @@ The wrappers set `PYTHONPATH=/Users/chihoyo/Project/CodeAnalyst/src` and execute
 /Users/chihoyo/.codex/skills/code-analyst/bin/code-analyst
 ```
 
-That wrapper sets `CODE_ANALYST_PROJECT_DIR=/Users/chihoyo/Project/CodeAnalyst`
-and runs the source checkout CLI through `python3 -m code_analyst.cli`.
+That wrapper sets `CODE_ANALYST_PROJECT_DIR` to the active root used during sync
+and runs `python3 -m code_analyst.cli`.
 
 ### 3.3 Naming
 

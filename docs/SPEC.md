@@ -14,12 +14,13 @@
 | 主体形态 | `skill + CLI` | skill 保存判断框架，CLI 固化重复、确定性的扫描/审计/建包/验证步骤。 |
 | 默认写入位置 | `/Users/chihoyo/Project/CodeAnalyst/analyses/` | 保持被分析项目干净，方便跨项目积累学习产物。 |
 | CLI 名称 | `code-analyst` | 符合多词 CLI 惯例，并和产品名 `CodeAnalyst` 对齐。 |
-| 第一版核心命令 | `inventory` / `flow-map` / `script-check` / `import-graph` / `vibe-audit` / `pack` / `review-pack` / `visual-pack` / `render-site` / `verify-site` / `doctor` | 覆盖快速盘点、多项目类型入口线索、脚本入口验证、静态依赖图、vibe coding 风险识别、分析包生成、review/重构/架构建议、静态可视化、站点验证、环境自检。 |
+| 第一版核心命令 | `inventory` / `flow-map` / `script-check` / `import-graph` / `vibe-audit` / `pack` / `review-pack` / `visual-pack` / `render-site` / `verify-site` / `doctor` / `sync-skill` / `update` | 覆盖快速盘点、多项目类型入口线索、脚本入口验证、静态依赖图、vibe coding 风险识别、分析包生成、review/重构/架构建议、静态可视化、站点验证、环境自检、skill 同步和 native 更新。 |
 | review / refactor / architecture | 同项目内做 read-only review/design pack；真正改代码回到目标项目执行 | review/design 复用当前证据层；写入目标项目属于目标项目自己的迭代边界。 |
 | 运行依赖 | Python 标准库优先 | 避免在临时项目里先陷入依赖安装。 |
 | 产物语言 | 跟随用户语言；中文请求生成中文文档 | 和原 skill 契约保持一致，减少二次整理。 |
 | 外部最佳实践吸收 | 只吸收可操作原则，不复制长篇上下文 | 降低常驻指令膨胀带来的成本和误导。 |
-| installed skill portability | source skill 同步时写入 `~/.agents/skills/code-analyst` 和 `~/.codex/skills/code-analyst`，生成 `bin/code-analyst`，skill 声明 `metadata.requires.bins` 和 `cliHelp`，fallback 使用 `CODE_ANALYST_PROJECT_DIR` | 后续 agent 可以从 Codex app skill discovery、PATH、skill-local wrapper 或 source checkout 稳定找到 CLI。 |
+| installed skill portability | source skill 同步时写入 `~/.agents/skills/code-analyst` 和 `~/.codex/skills/code-analyst`，生成 `bin/code-analyst`，skill 声明 `metadata.requires.bins` 和 `cliHelp`，fallback 使用 `CODE_ANALYST_PROJECT_DIR` | 后续 agent 可以从 Codex app skill discovery、PATH、native launcher、skill-local wrapper 或 active CodeAnalyst root 稳定找到 CLI。 |
+| release/update distribution | GitHub Releases native installer + source checkout `.venv/bin/code-analyst` developer wrapper | 普通用户可以不 clone 源码安装更新；源码开发仍有本地可验证入口，不再写 `/opt/homebrew/bin`。 |
 
 ## 3. Invariants
 
@@ -35,7 +36,7 @@
 
 **#6** Improvement guidance invariant: 分析包不能只解释“现在是什么”，还要给出下一步优化路线：先修可信度/验证，再修架构，再扩功能。
 
-**#7** Installed skill wrapper invariant: 已同步的 `~/.agents/skills/code-analyst` 和 `~/.codex/skills/code-analyst` copy 必须包含 `bin/code-analyst`，并且该 wrapper 指向 `/Users/chihoyo/Project/CodeAnalyst` 这个 source checkout；installed skill 不是可编辑 source-of-truth。
+**#7** Installed skill wrapper invariant: 已同步的 `~/.agents/skills/code-analyst` 和 `~/.codex/skills/code-analyst` copy 必须包含 `bin/code-analyst`，并且该 wrapper 通过 `CODE_ANALYST_PROJECT_DIR` 指向当前 active CodeAnalyst root：source checkout 或 native release `current`；installed skill 不是可编辑 source-of-truth。
 
 **#8** Recommendation-only invariant: 本项目可以提出 review、重构、架构设计和优化路线，但默认不生成会直接修改目标项目的 patch；落地修改应在目标项目自己的上下文、测试和版本控制中进行。
 
@@ -92,5 +93,8 @@ site_verification.json  # when --verify-site is used
 - `python3 -m code_analyst.cli visual-pack <target>` 能生成中央分析包和静态站点。
 - `python3 -m code_analyst.cli verify-site <site>` 能验证静态站点的 HTML、`data.json`、内嵌 graph JSON 和浏览器数据启动脚本。
 - `./scripts/update_cli.sh --force` 能在测试通过后同步 `~/.agents/skills/code-analyst` 和 `~/.codex/skills/code-analyst`。
+- `./scripts/install_cli.sh` 能安装项目内 `.venv/bin/code-analyst` source checkout wrapper，不写全局 `/opt/homebrew/bin`。
+- `./scripts/package_release.sh` 和 `./scripts/install_remote.sh` 能生成并安装 native release；`~/.local/bin/code-analyst update` 能刷新 native install。
+- `code-analyst sync-skill --targets codex,agents --force` 能薄封装 `scripts/sync_skill.sh`。
 - skill 能清楚告诉后续 Codex：什么时候调用哪个 CLI 命令，什么时候只读，什么时候进入优化建议。
 - `skillcli audit /Users/chihoyo/Project/CodeAnalyst --json` 不应有结构错误；portable wrapper、metadata、update lifecycle 相关 warning 应被及时修复。

@@ -23,8 +23,11 @@ This skill is a code analysis assistant, not a cross-repository code modificatio
 Resolve helper commands in this order:
 
 1. Run `code-analyst <command>` if it is on `PATH`.
-2. If this installed skill path is visible, run `bin/code-analyst <command>`.
-3. If `CODE_ANALYST_PROJECT_DIR` points to the source checkout, run:
+2. On Unix-like systems, if the native release launcher exists but
+   `code-analyst` is not on `PATH`, run `~/.local/bin/code-analyst <command>`.
+3. If this installed skill path is visible, run `bin/code-analyst <command>`.
+4. If `CODE_ANALYST_PROJECT_DIR` points to the source checkout or native release
+   root, run:
 
 ```bash
 CODE_ANALYST_PROJECT_DIR="$CODE_ANALYST_PROJECT_DIR" PYTHONPATH="$CODE_ANALYST_PROJECT_DIR/src" \
@@ -34,9 +37,7 @@ CODE_ANALYST_PROJECT_DIR="$CODE_ANALYST_PROJECT_DIR" PYTHONPATH="$CODE_ANALYST_P
 If none of those work but the canonical local checkout exists, use:
 
 ```bash
-CODE_ANALYST_PROJECT_DIR=/Users/chihoyo/Project/CodeAnalyst \
-  PYTHONPATH=/Users/chihoyo/Project/CodeAnalyst/src \
-  python3 -m code_analyst.cli <command>
+/Users/chihoyo/Project/CodeAnalyst/.venv/bin/code-analyst <command>
 ```
 
 ## Language
@@ -72,6 +73,8 @@ code-analyst review-pack --from-pack OUTPUT_ROOT
 code-analyst visual-pack TARGET --out OUTPUT_ROOT
 code-analyst render-site OUTPUT_ROOT/understanding_graph.json --out OUTPUT_ROOT/site
 code-analyst verify-site OUTPUT_ROOT/site --out OUTPUT_ROOT/site_verification.json
+code-analyst sync-skill --targets codex,agents --force
+code-analyst update
 ```
 
 Fallback when `code-analyst` is not on PATH:

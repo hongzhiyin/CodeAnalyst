@@ -17,11 +17,32 @@ This repository is both:
 - the source copied into global user skills under `~/.agents/skills/code-analyst`
   and the Codex runtime copy under `~/.codex/skills/code-analyst`
 
-## Quick Start
+## Native Install
+
+```bash
+curl -fsSL https://github.com/hongzhiyin/CodeAnalyst/releases/latest/download/install_remote.sh | sh
+~/.local/bin/code-analyst doctor
+~/.local/bin/code-analyst update
+```
+
+The native installer uses GitHub Releases, installs under
+`~/.local/share/code-analyst`, writes `~/.local/bin/code-analyst`, and refreshes
+installed skill copies by default.
+
+## Source Checkout Development
 
 ```bash
 ./scripts/install_cli.sh
-code-analyst doctor
+./.venv/bin/code-analyst doctor
+./.venv/bin/code-analyst sync-skill --targets codex,agents --force
+```
+
+The source checkout install is intentionally project-local. It no longer writes
+a global `/opt/homebrew/bin/code-analyst` wrapper.
+
+## Common Commands
+
+```bash
 code-analyst flow-map /path/to/project
 code-analyst script-check /path/to/project
 code-analyst pack /path/to/project
@@ -37,7 +58,8 @@ code-analyst verify-site /path/to/analysis-pack/site
 ```bash
 PYTHONPATH=src python3 -m unittest discover -s tests
 ./scripts/check_install.sh
-./scripts/sync_skill.sh --force
+./.venv/bin/code-analyst sync-skill --targets codex,agents --force
+./scripts/package_release.sh
 ```
 
 After source changes, run the full local lifecycle:
@@ -46,7 +68,7 @@ After source changes, run the full local lifecycle:
 ./scripts/update_cli.sh --force
 ```
 
-`update_cli.sh` installs the CLI wrapper, runs tests, and syncs both skill
+`update_cli.sh` installs the project-local CLI wrapper, runs tests, and syncs both skill
 copies so Codex app skill discovery and existing Codex runtime paths stay in
 step.
 
