@@ -157,7 +157,7 @@
 - [x] Run `docdev audit`.
 - [x] Run source checkout install/update lifecycle.
 - [x] Run native file URL install/update lifecycle.
-- [x] Record remaining public release publication gap.
+- [x] Record public release publication verification.
 
 **Acceptance**:
 1. Verification table records every acceptance command and result.
@@ -176,12 +176,14 @@
 | Native install smoke | `./scripts/install_remote.sh --release-base-url file:///Users/chihoyo/Project/CodeAnalyst/dist/releases --targets codex,agents --sync-skill` | 通过 | Installed 0.6.1 to `~/.local/share/code-analyst/releases/0.6.1` |
 | Native update smoke | `~/.local/bin/code-analyst update --release-base-url file:///Users/chihoyo/Project/CodeAnalyst/dist/releases --no-sync-skill` | 通过 | Launcher and current release refreshed |
 | Native doctor | `~/.local/bin/code-analyst doctor` | 通过 | Native root and installed skill wrappers ok |
+| Public release v0.6.2 | `gh release create v0.6.2 ... --latest` | 通过 | Interactive dashboard V1 release assets published |
+| Public installer smoke v0.6.2 | `install_remote.sh --version 0.6.2 --no-sync-skill` from GitHub release assets | 通过 | Temp native install reports `code-analyst 0.6.2` |
 
 ## 5. 风险与后续
 
 | ID | 风险 / 后续 | 影响 | 处理 |
 |---|---|---|---|
-| F-1 | GitHub repo 已 public，但尚未创建 versioned GitHub Release。 | README 的 curl latest installer 需要 release 发布后才能公开使用。 | 下一步发布 tag/release 并做 public URL smoke。 |
+| F-1 | GitHub repo 已 public，versioned GitHub Release 需要随稳定变更持续发布。 | README 的 curl latest installer 依赖 latest release assets。 | v0.6.2 已发布并完成 public URL smoke；后续版本沿用同一流程。 |
 | F-2 | native install 和 source wrapper 都叫 `code-analyst`，PATH 顺序可能导致用户实际运行来源不明确。 | update/doctor 可能作用到意外来源。 | doctor 显示 launcher root；source wrapper 改为 `.venv/bin`，全局 PATH 默认指向 native launcher。 |
 | F-3 | native install 默认 sync installed skill homes 会写用户目录。 | 沙箱或权限问题可能中断 update。 | 提供 `--no-sync-skill`，并在失败时给出可重试命令。 |
 | F-4 | release packaging 若遗漏 `skill/` 或 scripts，会导致 agent 安装可运行 CLI 但 skill 不一致。 | 版本漂移。 | package smoke 和 native install smoke 已覆盖 CLI version、installed `SKILL.md` 和 skill-local wrapper。 |

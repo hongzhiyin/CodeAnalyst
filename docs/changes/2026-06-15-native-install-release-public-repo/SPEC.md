@@ -6,10 +6,10 @@
 
 | 字段 | 内容 |
 |---|---|
-| 状态 | 已实施，本地验证通过；GitHub Release 发布待单独执行 |
+| 状态 | 已实施，本地和 public release 验证通过 |
 | 需求来源 | 用户询问当前项目是否需要支持 native install，并在 GitHub 上创建 public 仓库用于版本更新维护 |
 | 工作包目录 | `docs/changes/2026-06-15-native-install-release-public-repo/` |
-| 最后更新 | 2026-06-15 |
+| 最后更新 | 2026-06-17 |
 
 ## 1. 一句话目标
 
@@ -18,7 +18,7 @@
 ## 2. 背景与问题
 
 - 当前行为：source checkout 安装现在写入 `.venv/bin/code-analyst`；native installer 支持 release manifest、checksum、remote installer、native launcher 和 `code-analyst update`。
-- 问题：public GitHub Release 尚未发布；README 中的 GitHub Releases curl 入口需要 release assets 发布后才可公开使用。
+- 问题：public GitHub Release 需要在每次稳定变更后更新；README 中的 GitHub Releases curl 入口依赖 latest release assets。
 - 期望收益：新机器和后续 agent 可以用一条 GitHub Releases installer 安装稳定版本，再用 `code-analyst update` 获取新版本；本机开发不再依赖 `/opt/homebrew/bin` source wrapper。
 
 ## 3. 范围
@@ -27,7 +27,7 @@
 
 - 支持 public GitHub Releases 风格的 native install/update 分发路径。
 - 保留 source-checkout install/update 作为开发者维护路径。
-- 明确 public GitHub 仓库策略：当前 `origin` 已是 `https://github.com/hongzhiyin/CodeAnalyst.git`，但 visibility 是 `PRIVATE`。
+- 明确 public GitHub 仓库策略：当前 `origin` 已是 public `https://github.com/hongzhiyin/CodeAnalyst.git`。
 - 增加 release package、remote installer、native launcher/update、checksum/manifest、smoke verification 和文档入口。
 - 修复现有 `skillcli audit` warning：补 `code-analyst sync-skill`，并让它薄封装 `scripts/sync_skill.sh`。
 
@@ -74,7 +74,7 @@
 | 旧 `/opt/homebrew/bin/code-analyst` source wrapper | `scripts/install_cli.sh` 会移除识别到的旧生成 wrapper；source checkout 改用 `.venv/bin/code-analyst`。 |
 | 当前 `scripts/update_cli.sh --force` | 保留为 source checkout lifecycle，不替代 native `code-analyst update`。 |
 | 当前 installed skill wrappers | native sync 后应指向当前 native release；source sync 后应指向 source checkout。两者不能无提示混淆。 |
-| 当前 GitHub remote 是 private | 实现前需确认：转 public，或新建 public release repo。 |
+| 当前 GitHub remote | 使用 public `hongzhiyin/CodeAnalyst` 承载 release assets。 |
 
 ## 8. 验收标准
 

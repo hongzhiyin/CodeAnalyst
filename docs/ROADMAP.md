@@ -153,7 +153,7 @@
 - [x] Add release packaging assets: `scripts/package_release.sh`, `scripts/install_remote.sh`, manifest, checksum, tarball flow.
 - [x] Add `code-analyst update` to run the native installer/update path.
 - [x] Update README, skill, SPEC, ARCHITECTURE, ROADMAP, and DECISIONS.
-- [ ] Publish a versioned GitHub Release after final local verification and commit.
+- [x] Publish versioned GitHub Releases after final local verification and commit.
 
 **Acceptance**:
 1. `gh repo view hongzhiyin/CodeAnalyst --json visibility` reports `PUBLIC`.

@@ -19,7 +19,18 @@ class RenderSiteTest(unittest.TestCase):
                     {
                         "title": "Demo",
                         "summary": "Demo graph",
-                        "nodes": [{"id": "app", "label": "App", "kind": "entrypoint"}],
+                        "nodes": [
+                            {
+                                "id": "app",
+                                "label": "App",
+                                "kind": "entrypoint",
+                                "path": "src/App.tsx",
+                                "meaning": "Interactive app entry.",
+                                "next_read": "Follow imports from here.",
+                                "signals": ["entrypoint candidate"],
+                                "metrics": {"outgoing_internal_imports": 2},
+                            }
+                        ],
                         "edges": [],
                         "flows": [],
                         "evidence": [],
@@ -34,7 +45,12 @@ class RenderSiteTest(unittest.TestCase):
             self.assertEqual(index.resolve(), (out / "index.html").resolve())
             self.assertTrue(index.exists())
             self.assertTrue((out / "data.json").exists())
-            self.assertIn('id="graph-data"', index.read_text(encoding="utf-8"))
+            html = index.read_text(encoding="utf-8")
+            self.assertIn('id="graph-data"', html)
+            self.assertIn("insight-card", html)
+            self.assertIn("relation-button", html)
+            data = json.loads((out / "data.json").read_text(encoding="utf-8"))
+            self.assertEqual(data["nodes"][0]["meaning"], "Interactive app entry.")
 
 
 if __name__ == "__main__":

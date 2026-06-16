@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections import Counter
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -58,6 +59,110 @@ def _top_reading_order(inventory: dict[str, Any]) -> list[str]:
     return ordered[:12]
 
 
+def _path_kind(path: str, inventory: dict[str, Any]) -> str:
+    normalized = path.rstrip("/")
+    name = Path(normalized).name.lower()
+    top = normalized.split("/", 1)[0].lower()
+    manifests = set(inventory.get("manifests", []))
+    entrypoints = set(inventory.get("entrypoint_candidates", []))
+    if path in entrypoints or normalized in entrypoints:
+        return "entrypoint"
+    if path in manifests or normalized in manifests:
+        return "config"
+    if top in {"skill", "skills"} or name == "skill.md":
+        return "skill"
+    if top in {"tests", "test", "__tests__"} or name.startswith("test_") or name.endswith(".test.ts") or name.endswith(".spec.ts"):
+        return "test"
+    if top in {"scripts", "bin"}:
+        return "script"
+    if top in {"docs", "doc"} or Path(normalized).suffix.lower() in {".md", ".rst", ".txt"}:
+        return "document"
+    if name in {"package.json", "pyproject.toml", "tsconfig.json", "makefile", "dockerfile"}:
+        return "config"
+    return "module"
+
+
+def _functional_meaning(path: str, kind: str, file_count: int | None = None) -> str:
+    is_dir = path.endswith("/")
+    normalized = path.rstrip("/")
+    name = Path(normalized).name
+    lower = name.lower()
+    top = normalized.split("/", 1)[0].lower()
+    count_text = f"，扫描到 {file_count} 个文件" if file_count is not None else ""
+
+    if kind == "entrypoint":
+        return "可能的用户触发或运行入口；理解项目行为时优先从这里追踪调用和依赖。"
+    if kind == "config":
+        return "项目配置、构建、依赖或工具元数据；用来确认项目如何安装、运行和验证。"
+    if kind == "skill":
+        return "Agent-facing 工作流或技能说明；决定后续 agent 如何调用工具、读取证据和解释项目。"
+    if kind == "test":
+        return "验证层；用来确认现有行为、回归风险和项目是否有可信的反馈闭环。"
+    if kind == "script":
+        return "自动化脚本或命令入口；通常承担安装、同步、打包、发布或本地维护流程。"
+    if kind == "document":
+        return "文档或决策记录；用于理解项目目标、使用方式、约束和历史取舍。"
+    if is_dir:
+        if top in {"src", "lib", "app"}:
+            return f"主要实现代码区域{count_text}；通常是理解产品行为和模块边界的核心入口。"
+        if top in {"components", "pages", "routes"}:
+            return f"界面或路由区域{count_text}；通常承载用户可见流程。"
+        if top in {"server", "api", "services"}:
+            return f"服务端或集成区域{count_text}；通常承载外部请求、后台流程或业务接口。"
+        return f"顶层结构区域{count_text}；需要结合入口、依赖边和脚本检查判断它是否属于主路径。"
+    if lower == "cli.py":
+        return "命令行分发入口；通常连接用户命令、扫描模块、生成产物和验证流程。"
+    if lower == "pack.py":
+        return "分析包生成逻辑；通常负责把扫描证据汇总成 Markdown、JSON 和可视化数据。"
+    if lower == "render_site.py":
+        return "静态可视化页面渲染逻辑；负责把 graph JSON 变成可交互 HTML。"
+    if lower == "review_pack.py":
+        return "只读 review 和设计建议生成逻辑；负责把扫描证据转成下一步优化路线。"
+    if lower.endswith(".py"):
+        return "Python 源码模块；需要结合 import graph 的入边/出边判断它在运行路径中的角色。"
+    if lower.endswith((".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs")):
+        return "JavaScript/TypeScript 源码模块；需要结合 import graph 和框架入口判断实际接线。"
+    return "代码或项目文件；需要结合路径、入口线索和依赖关系确认功能含义。"
+
+
+def _node_next_read(kind: str, path: str, incoming: int, outgoing: int, related_flows: list[str]) -> str:
+    if related_flows:
+        return f"先对照相关流程：{', '.join(related_flows[:3])}，再沿入口文件追踪真实行为。"
+    if kind == "entrypoint":
+        return "从这个入口向外追踪 import 边和脚本声明，确认用户动作最终调用哪些模块。"
+    if outgoing:
+        return "继续阅读它导入的内部模块，确认下游职责和副作用边界。"
+    if incoming:
+        return "回到引用它的上游节点，确认它是主路径依赖还是辅助实现。"
+    if kind == "config":
+        return "用它确认项目运行、构建、测试或 agent 调用方式，再回到对应入口。"
+    if kind == "test":
+        return "用这些验证文件反推重要行为，再确认核心路径是否被覆盖。"
+    return "先确认它是否在入口、脚本或 import graph 主路径上，再决定是否深入阅读。"
+
+
+def _node_signals(
+    path: str,
+    kind: str,
+    incoming: int,
+    outgoing: int,
+    related_flows: list[str],
+    inventory: dict[str, Any],
+) -> list[str]:
+    signals: list[str] = [f"kind={kind}"]
+    if path in inventory.get("manifests", []):
+        signals.append("manifest/config candidate")
+    if path in inventory.get("entrypoint_candidates", []):
+        signals.append("entrypoint candidate")
+    if incoming:
+        signals.append(f"incoming internal imports={incoming}")
+    if outgoing:
+        signals.append(f"outgoing internal imports={outgoing}")
+    for flow in related_flows[:3]:
+        signals.append(f"related flow={flow}")
+    return signals
+
+
 def _graph(
     inventory: dict[str, Any],
     audit: dict[str, Any],
@@ -65,6 +170,47 @@ def _graph(
     flow_map: dict[str, Any],
     script_check: dict[str, Any],
 ) -> dict[str, Any]:
+    internal_edges = [
+        edge
+        for edge in import_graph.get("edges", [])
+        if edge.get("scope") == "internal" and edge.get("to")
+    ]
+    incoming_by_file = Counter(str(edge["to"]) for edge in internal_edges)
+    outgoing_by_file = Counter(str(edge["from"]) for edge in internal_edges)
+    flows = flow_map.get("flows", [])
+
+    def related_flows_for(path: str) -> list[str]:
+        normalized = path.rstrip("/")
+        return [
+            flow["title"]
+            for flow in flows
+            if any(
+                str(entry).startswith(path)
+                or str(entry).startswith(normalized + "/")
+                or str(entry) == normalized
+                for entry in flow.get("entrypoints", [])
+            )
+        ][:6]
+
+    def insight(path: str, kind: str, file_count: int | None = None) -> dict[str, Any]:
+        related_flows = related_flows_for(path)
+        if path.endswith("/"):
+            incoming = sum(count for target, count in incoming_by_file.items() if target.startswith(path))
+            outgoing = sum(count for source, count in outgoing_by_file.items() if source.startswith(path))
+        else:
+            incoming = incoming_by_file[path]
+            outgoing = outgoing_by_file[path]
+        return {
+            "meaning": _functional_meaning(path, kind, file_count),
+            "next_read": _node_next_read(kind, path, incoming, outgoing, related_flows),
+            "signals": _node_signals(path, kind, incoming, outgoing, related_flows, inventory),
+            "metrics": {
+                "incoming_internal_imports": incoming,
+                "outgoing_internal_imports": outgoing,
+                **({"file_count": file_count} if file_count is not None else {}),
+            },
+        }
+
     nodes: list[dict[str, Any]] = [
         {
             "id": "target",
@@ -74,31 +220,78 @@ def _graph(
             "layer": "Source",
             "path": ".",
             "summary": "被分析的项目根目录。",
+            "meaning": "分析的目标项目根；所有结构、流程、风险和阅读路线都从这里展开。",
+            "next_read": "从入口候选、manifest 和 flow-map 开始，再沿 import graph 追踪主路径。",
+            "signals": [
+                f"project types={', '.join(inventory.get('project_types', []))}",
+                f"files scanned={inventory.get('file_count_scanned', 0)}",
+            ],
+            "metrics": {
+                "files_scanned": inventory.get("file_count_scanned", 0),
+                "manifest_count": len(inventory.get("manifests", [])),
+                "entrypoint_count": len(inventory.get("entrypoint_candidates", [])),
+            },
         }
     ]
     edges: list[dict[str, Any]] = []
 
-    def add_node(node_id: str, label: str, kind: str, group: str, path: str, summary: str) -> None:
+    def add_node(
+        node_id: str,
+        label: str,
+        kind: str,
+        group: str,
+        path: str,
+        summary: str,
+        extra: dict[str, Any] | None = None,
+    ) -> None:
+        payload = {
+            "id": node_id,
+            "label": label,
+            "kind": kind,
+            "group": group,
+            "layer": group,
+            "path": path,
+            "summary": summary,
+        }
+        if extra:
+            payload.update(extra)
         nodes.append(
-            {
-                "id": node_id,
-                "label": label,
-                "kind": kind,
-                "group": group,
-                "layer": group,
-                "path": path,
-                "summary": summary,
-            }
+            payload
         )
         edges.append({"from": "target", "to": node_id, "label": "contains", "kind": "contains"})
 
     for item in inventory.get("manifests", [])[:10]:
-        add_node(f"manifest-{slugify(item)}", item, "config", "Manifests", item, "项目配置或元数据入口。")
+        add_node(
+            f"manifest-{slugify(item)}",
+            item,
+            "config",
+            "Manifests",
+            item,
+            "项目配置或元数据入口。",
+            insight(item, "config"),
+        )
     for item in inventory.get("entrypoint_candidates", [])[:10]:
-        add_node(f"entry-{slugify(item)}", item, "entrypoint", "Entrypoints", item, "可能的用户或运行入口。")
+        add_node(
+            f"entry-{slugify(item)}",
+            item,
+            "entrypoint",
+            "Entrypoints",
+            item,
+            "可能的用户或运行入口。",
+            insight(item, "entrypoint"),
+        )
     for item, count in list(inventory.get("top_directories", {}).items())[:12]:
         if item.endswith("/"):
-            add_node(f"dir-{slugify(item)}", item, "module", "Top directories", item, f"顶层目录，扫描到 {count} 个文件。")
+            kind = _path_kind(item, inventory)
+            add_node(
+                f"dir-{slugify(item)}",
+                item,
+                kind,
+                "Top directories",
+                item,
+                f"顶层目录，扫描到 {count} 个文件。",
+                insight(item, kind, count),
+            )
 
     nodes.append(
         {
@@ -109,6 +302,10 @@ def _graph(
             "layer": "Checks",
             "path": "vibe_audit.json",
             "summary": f"发现 {audit['summary']['finding_count']} 条可能的生成遗留或验证风险。",
+            "meaning": "启发式风险检查结果；帮助定位缺验证、缺脚本、半接线 UI 或疑似未使用文件。",
+            "next_read": "把这些 findings 当作追踪线索，先验证再决定是否重构或删除。",
+            "signals": [f"findings={audit['summary']['finding_count']}"],
+            "metrics": {"findings": audit["summary"]["finding_count"]},
         }
     )
     edges.append({"from": "vibe-audit", "to": "target", "label": "examines", "kind": "examines"})
@@ -122,6 +319,10 @@ def _graph(
             "layer": "Checks",
             "path": "flow_map.json",
             "summary": f"发现 {flow_map['summary']['flow_count']} 条入口或流程线索。",
+            "meaning": "按项目类型提取的入口和流程候选；用于决定从哪里开始阅读真实用户路径。",
+            "next_read": "优先选择用户可触发入口，再沿 entrypoints 和 import graph 展开。",
+            "signals": [f"flows={flow_map['summary']['flow_count']}"],
+            "metrics": {"flows": flow_map["summary"]["flow_count"]},
         }
     )
     edges.append({"from": "flow-map", "to": "target", "label": "maps", "kind": "maps"})
@@ -135,6 +336,10 @@ def _graph(
             "layer": "Checks",
             "path": "script_check.json",
             "summary": f"检查 {script_check['summary']['check_count']} 个脚本或命令入口声明。",
+            "meaning": "脚本和命令入口的静态可信度检查；判断 README/package/pyproject 声明是否指向真实目标。",
+            "next_read": "先修 missing/warn 的入口声明，再把 ok 的脚本作为运行或验证路径。",
+            "signals": [f"checks={script_check['summary']['check_count']}"],
+            "metrics": {"checks": script_check["summary"]["check_count"]},
         }
     )
     edges.append({"from": "script-check", "to": "target", "label": "checks", "kind": "checks"})
@@ -144,15 +349,17 @@ def _graph(
     def ensure_file_node(path: str, group: str = "Import graph") -> str:
         node_id = f"file-{slugify(path)}"
         if node_id not in existing_node_ids:
+            kind = _path_kind(path, inventory)
             nodes.append(
                 {
                     "id": node_id,
                     "label": path,
-                    "kind": "module",
+                    "kind": kind,
                     "group": group,
                     "layer": group,
                     "path": path,
                     "summary": "由 import graph 发现的源码文件。",
+                    **insight(path, kind),
                 }
             )
             existing_node_ids.add(node_id)
@@ -183,17 +390,44 @@ def _graph(
                 "layer": "Flow map",
                 "path": ", ".join(flow.get("entrypoints", [])[:2]) or "flow_map.json",
                 "summary": "; ".join(flow.get("evidence", [])[:2]) or "入口或流程线索。",
+                "meaning": f"{flow['title']}：{'; '.join(flow.get('evidence', [])[:2]) or '由 flow-map 提取的入口或流程线索。'}",
+                "next_read": "打开对应 entrypoints，确认这个流程是否是用户真实触发路径。",
+                "signals": [f"kind={flow.get('kind', 'flow')}", *[f"entrypoint={entry}" for entry in flow.get("entrypoints", [])[:3]]],
+                "metrics": {"entrypoints": len(flow.get("entrypoints", [])), "evidence_items": len(flow.get("evidence", []))},
             }
         )
         edges.append({"from": "flow-map", "to": flow_id, "label": flow["kind"], "kind": "maps"})
 
+    def reading_step_for(path: str) -> dict[str, str]:
+        if path in inventory.get("entrypoint_candidates", []):
+            node = f"entry-{slugify(path)}"
+        elif path in inventory.get("manifests", []):
+            node = f"manifest-{slugify(path)}"
+        elif path.endswith("/"):
+            node = f"dir-{slugify(path)}"
+        else:
+            node = f"file-{slugify(path)}"
+        return {
+            "label": path,
+            "node": node,
+            "path": path,
+            "summary": _node_next_read(_path_kind(path, inventory), path, incoming_by_file[path], outgoing_by_file[path], related_flows_for(path)),
+        }
+
+    reading_steps = [reading_step_for(path) for path in _top_reading_order(inventory)]
+
     return {
         "title": f"{Path(inventory['root']).name} 快速学习图",
-        "summary": "入口、配置、顶层目录和 vibe-audit 风险的第一版结构图。",
+        "summary": "可搜索、可点击的代码结构与功能含义地图，覆盖入口、配置、目录、源码文件、流程线索和风险证据。",
         "locale": "zh-CN",
         "nodes": nodes,
         "edges": edges,
         "flows": [
+            {
+                "name": "推荐阅读路线",
+                "summary": "按入口、manifest 和顶层目录排列的第一轮阅读顺序。",
+                "steps": reading_steps,
+            },
             {
                 "name": "快速学习流程",
                 "summary": "先盘点结构，再审计生成遗留，最后阅读入口并制定优化路线。",

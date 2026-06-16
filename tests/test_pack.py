@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -34,6 +35,12 @@ class PackTest(unittest.TestCase):
                 "understanding_graph.json",
             ]:
                 self.assertTrue((out / name).exists(), name)
+
+            graph = json.loads((out / "understanding_graph.json").read_text(encoding="utf-8"))
+            self.assertTrue(any(node.get("meaning") for node in graph["nodes"]))
+            self.assertTrue(any(node.get("next_read") for node in graph["nodes"]))
+            self.assertTrue(any(node.get("signals") for node in graph["nodes"]))
+            self.assertTrue(any(flow.get("name") == "推荐阅读路线" for flow in graph["flows"]))
 
 
 if __name__ == "__main__":

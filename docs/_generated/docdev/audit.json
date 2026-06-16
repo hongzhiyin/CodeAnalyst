@@ -61,6 +61,47 @@
           4,
           5
         ]
+      },
+      {
+        "path": "/Users/chihoyo/Project/CodeAnalyst/docs/changes/2026-06-16-interactive-dashboard-v1",
+        "architecture": "present",
+        "decision_ids": [
+          1
+        ],
+        "roadmap_steps": [
+          "Step 0 - 建立需求工作包",
+          "Step 1 - 澄清需求与范围",
+          "Step 2 - 调研既有实现",
+          "Step 3 - 形成并确认方案",
+          "Step 4 - 实施代码与测试",
+          "Step 5 - 验证与收尾"
+        ],
+        "invariant_ids": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "path": "/Users/chihoyo/Project/CodeAnalyst/docs/changes/2026-06-16-understand-anything-comparison",
+        "architecture": "present",
+        "decision_ids": [
+          1,
+          2
+        ],
+        "roadmap_steps": [
+          "Step 0 - 建立需求工作包",
+          "Step 1 - 澄清需求与范围",
+          "Step 2 - 调研外部项目与当前项目",
+          "Step 3 - 形成并确认方案"
+        ],
+        "invariant_ids": [
+          1,
+          2,
+          3,
+          4
+        ]
       }
     ]
   },

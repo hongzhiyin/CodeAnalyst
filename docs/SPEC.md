@@ -91,6 +91,7 @@ site_verification.json  # when --verify-site is used
 - `python3 -m code_analyst.cli review-pack <target>` 能生成只读 review、重构方向和架构设计建议。
 - `python3 -m code_analyst.cli review-pack --from-pack <pack-root>` 能不重扫目标、从已有 pack 重新生成 review 建议。
 - `python3 -m code_analyst.cli visual-pack <target>` 能生成中央分析包和静态站点。
+- `python3 -m code_analyst.cli visual-pack <target>` 生成的静态站点能搜索、点击并展示模块/文件/入口的功能含义、连接关系、证据信号和推荐阅读路径。
 - `python3 -m code_analyst.cli verify-site <site>` 能验证静态站点的 HTML、`data.json`、内嵌 graph JSON 和浏览器数据启动脚本。
 - `./scripts/update_cli.sh --force` 能在测试通过后同步 `~/.agents/skills/code-analyst` 和 `~/.codex/skills/code-analyst`。
 - `./scripts/install_cli.sh` 能安装项目内 `.venv/bin/code-analyst` source checkout wrapper，不写全局 `/opt/homebrew/bin`。

@@ -37,6 +37,13 @@ LABELS_EN: dict[str, Any] = {
     "noQuestions": "No open questions listed.",
     "pathLabel": "Path",
     "groupLabel": "Group",
+    "meaningTitle": "Functional Meaning",
+    "nextReadTitle": "Next Read",
+    "signalsTitle": "Signals",
+    "metricsTitle": "Metrics",
+    "relationsTitle": "Relations",
+    "noSignals": "No signals listed.",
+    "noMetrics": "No metrics listed.",
     "edgeFallback": "relates",
     "kindLabels": {
         "skill": "skill",
@@ -76,6 +83,13 @@ LABELS_ZH: dict[str, Any] = {
     "noQuestions": "暂无开放问题。",
     "pathLabel": "路径",
     "groupLabel": "分组",
+    "meaningTitle": "功能含义",
+    "nextReadTitle": "下一步阅读",
+    "signalsTitle": "证据信号",
+    "metricsTitle": "指标",
+    "relationsTitle": "连接关系",
+    "noSignals": "暂无证据信号。",
+    "noMetrics": "暂无指标。",
     "edgeFallback": "关联",
     "kindLabels": {
         "skill": "技能",
@@ -242,6 +256,11 @@ HTML_TEMPLATE = """<!doctype html>
       font-weight: 650;
       overflow-wrap: anywhere;
     }
+    .node-path {
+      color: var(--muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
     .workspace {
       display: grid;
       gap: 18px;
@@ -296,6 +315,49 @@ HTML_TEMPLATE = """<!doctype html>
       color: var(--muted);
       line-height: 1.6;
       margin: 0;
+    }
+    .detail-stack {
+      display: grid;
+      gap: 12px;
+    }
+    .insight-card {
+      border: 1px solid var(--soft-line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcfe;
+    }
+    .insight-card h3 {
+      margin: 0 0 7px;
+      font-size: 13px;
+      color: var(--ink);
+    }
+    .signal-list, .metric-list, .relation-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .signal-list li, .metric-list li {
+      color: var(--muted);
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+    .relation-button {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 7px 9px;
+      background: #fff;
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+    .relation-button:hover, .relation-button:focus {
+      border-color: var(--accent);
+      outline: none;
+      background: var(--accent-soft);
     }
     code {
       display: inline-block;
@@ -567,7 +629,17 @@ HTML_TEMPLATE = """<!doctype html>
       const q = search.value.trim().toLowerCase();
       if (!q) return nodes;
       return nodes.filter(n =>
-        [n.label, n.kind, n.path, n.summary, groupFor(n)].some(v => String(v || '').toLowerCase().includes(q))
+        [
+          n.label,
+          n.kind,
+          n.path,
+          n.summary,
+          n.meaning,
+          n.next_read,
+          Array.isArray(n.signals) ? n.signals.join(' ') : '',
+          n.metrics && typeof n.metrics === 'object' ? JSON.stringify(n.metrics) : '',
+          groupFor(n)
+        ].some(v => String(v || '').toLowerCase().includes(q))
       );
     }
 
@@ -618,6 +690,7 @@ HTML_TEMPLATE = """<!doctype html>
           <span class="node-copy">
             <span class="kind">${esc(displayKind(node.kind))}</span>
             <span class="label">${esc(node.label || node.id)}</span>
+            ${node.path ? `<span class="node-path">${esc(node.path)}</span>` : ''}
           </span>
         `;
         button.addEventListener('click', () => {
@@ -628,24 +701,86 @@ HTML_TEMPLATE = """<!doctype html>
       }
     }
 
+    function renderList(items, emptyText) {
+      if (!Array.isArray(items) || !items.length) return `<li class="muted">${esc(emptyText)}</li>`;
+      return items.map(item => `<li>${esc(item)}</li>`).join('');
+    }
+
+    function renderMetrics(metrics) {
+      if (!metrics || typeof metrics !== 'object') return `<li class="muted">${esc(l('noMetrics'))}</li>`;
+      const entries = Object.entries(metrics).filter(([, value]) => value !== null && value !== undefined && value !== '');
+      if (!entries.length) return `<li class="muted">${esc(l('noMetrics'))}</li>`;
+      return entries.map(([key, value]) => `<li><strong>${esc(key)}:</strong> ${esc(value)}</li>`).join('');
+    }
+
+    function renderRelationButtons(relations, direction) {
+      if (!relations.length) return `<li class="muted">${esc(l('noneListed'))}</li>`;
+      return relations.map(edge => {
+        const otherId = direction === 'incoming' ? edge.from : edge.to;
+        const edgeLabel = edge.label || edge.kind || l('edgeFallback');
+        return `
+          <li>
+            <button type="button" class="relation-button" data-node-id="${esc(otherId)}">
+              <strong>${esc(labelFor(otherId))}</strong>
+              <span class="muted">${esc(edgeLabel)}</span>
+            </button>
+          </li>
+        `;
+      }).join('');
+    }
+
+    function attachRelationHandlers() {
+      details.querySelectorAll('[data-node-id]').forEach(button => {
+        button.addEventListener('click', () => {
+          selectedId = button.getAttribute('data-node-id');
+          render();
+        });
+      });
+    }
+
     function renderDetails() {
       const node = nodes.find(n => n.id === selectedId) || nodes[0] || {};
       const outgoing = edges.filter(e => e.from === node.id);
       const incoming = edges.filter(e => e.to === node.id);
+      const meaning = node.meaning || node.summary || l('noSummary');
+      const nextRead = node.next_read || '';
       details.innerHTML = `
-        <div>
-          <p class="summary">${esc(node.summary || l('noSummary'))}</p>
+        <div class="detail-stack">
+          <div class="insight-card">
+            <h3>${esc(l('meaningTitle'))}</h3>
+            <p class="summary">${esc(meaning)}</p>
+          </div>
+          ${nextRead ? `
+            <div class="insight-card">
+              <h3>${esc(l('nextReadTitle'))}</h3>
+              <p class="summary">${esc(nextRead)}</p>
+            </div>
+          ` : ''}
           <div class="pill-row">
             <span class="pill">${esc(displayKind(node.kind))}</span>
             <span class="pill">${esc(l('groupLabel'))}: ${esc(groupFor(node))}</span>
             ${node.path ? `<span class="pill">${esc(l('pathLabel'))}: <code>${esc(node.path)}</code></span>` : ''}
           </div>
         </div>
-        <div>
-          <div class="muted"><strong>${esc(l('incoming'))}:</strong> ${incoming.length ? incoming.map(e => esc(labelFor(e.from))).join(', ') : esc(l('noneListed'))}</div>
-          <div class="muted"><strong>${esc(l('outgoing'))}:</strong> ${outgoing.length ? outgoing.map(e => esc(labelFor(e.to))).join(', ') : esc(l('noneListed'))}</div>
+        <div class="detail-stack">
+          <div class="insight-card">
+            <h3>${esc(l('relationsTitle'))}</h3>
+            <div class="muted"><strong>${esc(l('incoming'))}</strong></div>
+            <ul class="relation-list">${renderRelationButtons(incoming, 'incoming')}</ul>
+            <div class="muted" style="margin-top:10px"><strong>${esc(l('outgoing'))}</strong></div>
+            <ul class="relation-list">${renderRelationButtons(outgoing, 'outgoing')}</ul>
+          </div>
+          <div class="insight-card">
+            <h3>${esc(l('signalsTitle'))}</h3>
+            <ul class="signal-list">${renderList(node.signals, l('noSignals'))}</ul>
+          </div>
+          <div class="insight-card">
+            <h3>${esc(l('metricsTitle'))}</h3>
+            <ul class="metric-list">${renderMetrics(node.metrics)}</ul>
+          </div>
         </div>
       `;
+      attachRelationHandlers();
     }
 
     function wrapLabel(text, max = 16) {
