@@ -163,6 +163,210 @@ def _node_signals(
     return signals
 
 
+def _node_by_path(graph: dict[str, Any], path: str) -> str | None:
+    normalized = path.rstrip("/")
+    for node in graph.get("nodes", []):
+        node_path = str(node.get("path", "")).rstrip("/")
+        if node_path == normalized or str(node.get("path", "")) == path:
+            return str(node.get("id"))
+    return None
+
+
+def _first_existing_node(graph: dict[str, Any], node_ids: list[str]) -> str:
+    known = {str(node.get("id")) for node in graph.get("nodes", [])}
+    for node_id in node_ids:
+        if node_id in known:
+            return node_id
+    return "target"
+
+
+def _guide_step(
+    label: str,
+    summary: str,
+    node: str,
+    path: str,
+    evidence_type: str,
+    evidence: str,
+    takeaway: str,
+) -> dict[str, str]:
+    return {
+        "label": label,
+        "summary": summary,
+        "node": node,
+        "path": path,
+        "evidence_type": evidence_type,
+        "evidence": evidence,
+        "takeaway": takeaway,
+    }
+
+
+def _learning_guide(
+    inventory: dict[str, Any],
+    import_graph: dict[str, Any],
+    flow_map: dict[str, Any],
+    script_check: dict[str, Any],
+    graph: dict[str, Any],
+) -> dict[str, Any]:
+    project_name = Path(inventory["root"]).name
+    flows = flow_map.get("flows", [])
+    checks = script_check.get("checks", [])
+    ok_checks = [item for item in checks if item.get("status") == "ok"]
+    primary_flow = flows[0] if flows else {}
+    primary_entry = ""
+    for entry in primary_flow.get("entrypoints", []):
+        if entry:
+            primary_entry = str(entry)
+            break
+    if not primary_entry and inventory.get("entrypoint_candidates"):
+        primary_entry = str(inventory["entrypoint_candidates"][0])
+
+    command_name = ""
+    command_path = ""
+    if ok_checks:
+        command_name = str(ok_checks[0].get("name") or "")
+        command_path = str(ok_checks[0].get("target") or ok_checks[0].get("source") or "")
+    if not command_name and primary_flow:
+        command_name = str(primary_flow.get("title") or "主要入口")
+    if not command_path:
+        command_path = primary_entry or "flow_map.json"
+
+    entry_node = _node_by_path(graph, primary_entry) if primary_entry else None
+    manifest_path = inventory.get("manifests", [None])[0] or "inventory.json"
+    manifest_node = _node_by_path(graph, str(manifest_path)) or "target"
+    command_node = _node_by_path(graph, command_path) or entry_node or _first_existing_node(graph, ["script-check", "flow-map", "target"])
+    pack_node = _node_by_path(graph, "src/code_analyst/pack.py") or _first_existing_node(graph, ["flow-map", "target"])
+    render_node = _node_by_path(graph, "src/code_analyst/render_site.py") or _first_existing_node(graph, ["target"])
+    cli_node = _node_by_path(graph, "src/code_analyst/cli.py") or entry_node or command_node
+    verify_node = _node_by_path(graph, "src/code_analyst/verify_site.py") or _first_existing_node(graph, ["script-check", "vibe-audit", "target"])
+    flow_node = "flow-map" if _first_existing_node(graph, ["flow-map"]) == "flow-map" else "target"
+    script_node = "script-check" if _first_existing_node(graph, ["script-check"]) == "script-check" else "target"
+
+    case_title = (
+        f"用户运行 `{command_name}` 时，系统如何找到入口并生成可读产物"
+        if command_name
+        else "用户触发项目入口时，系统如何从入口走到核心产物"
+    )
+    case_steps = [
+        _guide_step(
+            "确认项目入口和运行方式",
+            "先不要读所有文件。用 manifest、脚本检查和 flow-map 判断用户真正可能触发哪个入口。",
+            command_node,
+            command_path,
+            "confirmed",
+            "script_check.json / flow_map.json",
+            "入口是学习路线的起点；没有入口，图谱只是一张散开的地图。",
+        ),
+        _guide_step(
+            "进入分发层",
+            "阅读入口文件，找出命令如何被解析并分派到具体功能模块。",
+            cli_node,
+            primary_entry or command_path,
+            "entrypoint hint",
+            primary_flow.get("title", "entrypoint_candidates") if primary_flow else "entrypoint_candidates",
+            "这一层回答“用户动作进来后，代码把它交给谁处理”。",
+        ),
+        _guide_step(
+            "收集证据而不是直接猜功能",
+            "用 flow-map、script-check、import-graph 和 vibe-audit 建立可追溯证据，再进入解释。",
+            flow_node,
+            "flow_map.json",
+            "confirmed",
+            f"flows={flow_map['summary']['flow_count']}, internal_imports={import_graph['summary']['internal_edge_count']}",
+            "这一步把阅读从直觉变成有证据的学习路径。",
+        ),
+        _guide_step(
+            "把证据组织成学习包",
+            "pack 层把扫描结果汇总成 Markdown、JSON、graph 和 guided lesson，供页面和 agent 继续消费。",
+            pack_node,
+            "src/code_analyst/pack.py",
+            "static dependency",
+            "understanding_graph.json / learning_guide.json",
+            "这里是从“原始扫描结果”变成“可学习材料”的关键转换。",
+        ),
+        _guide_step(
+            "把学习包渲染成可交互教材",
+            "render-site 把 guide、节点、关系和证据嵌入静态 HTML，让用户按章节阅读并随时跳回索引。",
+            render_node,
+            "src/code_analyst/render_site.py",
+            "static dependency",
+            "site/index.html",
+            "图谱仍然存在，但它服务于教程步骤，而不是抢占学习入口。",
+        ),
+        _guide_step(
+            "验证页面和剩余风险",
+            "最后用 verify-site、测试和开放问题确认产物结构可用，并标出需要人工判断的地方。",
+            verify_node,
+            "site_verification.json",
+            "confirmed",
+            "verify-site / vibe_audit.json",
+            "学习路径的终点不是读完所有文件，而是知道下一步该验证什么。",
+        ),
+    ]
+
+    generic_intro = [
+        "从一个实际问题开始，而不是先看完整图谱。",
+        "先确认入口和证据，再沿主路径拆模块。",
+        "把完整图谱当作索引：读到某一步再跳进去查关系。",
+    ]
+    project_types = ", ".join(inventory.get("project_types", [])) or "unknown"
+    guide = {
+        "version": 1,
+        "quickstart": {
+            "title": f"{project_name} 学习路线",
+            "problem": f"如果你第一次接触 `{project_name}`，先回答一个具体问题：{case_title}。",
+            "why_this_path": "这个路径会经过入口、证据采集、产物生成、页面渲染和验证，比直接看总览图更接近真实理解过程。",
+            "learning_goals": generic_intro,
+            "start_node": command_node,
+            "start_path": command_path,
+            "project_types": project_types,
+        },
+        "case_study": {
+            "title": case_title,
+            "trigger": f"用户触发 `{command_name or primary_flow.get('title', '项目入口')}`。",
+            "mental_model": "把项目当成一条工作流来读：入口接收用户动作，证据模块确认事实，pack 层组织材料，render 层呈现教材，验证层确认产物可信。",
+            "steps": case_steps,
+        },
+        "chapters": [
+            {
+                "title": "第 1 章：先找入口，不先读全图",
+                "question": "用户的动作到底从哪个文件或命令进入系统？",
+                "summary": "目标是确定用户动作从哪里进入系统，以及哪个文件负责分发。",
+                "principle": "学习一个项目时，入口相当于例题题干；先确认触发条件，后面的模块才有阅读顺序。",
+                "steps": [case_steps[0], case_steps[1]],
+            },
+            {
+                "title": "第 2 章：用证据建立心智模型",
+                "question": "哪些结论是工具确认过的事实，哪些只是静态线索？",
+                "summary": "目标是区分 confirmed facts、entrypoint hints、static dependencies 和 inference。",
+                "principle": "先把证据类型分清，才能避免把 import graph 误读成真实运行时调用链。",
+                "steps": [case_steps[2]],
+            },
+            {
+                "title": "第 3 章：理解产物生成链路",
+                "question": "扫描结果怎样变成可以阅读、可以点击、可以验证的学习材料？",
+                "summary": "目标是看懂扫描结果如何变成学习包、图谱和页面。",
+                "principle": "pack 层负责把分散事实变成稳定数据结构；render 层只负责把这些结构转成阅读体验。",
+                "steps": [case_steps[3], case_steps[4]],
+            },
+            {
+                "title": "第 4 章：回到验证和下一步",
+                "question": "读到这里以后，哪些结论还能继续相信，哪些需要人工或运行时验证？",
+                "summary": "目标是知道哪些结论可信，哪些还需要运行或人工确认。",
+                "principle": "教材式页面不应该假装自己证明了一切；它应该告诉你证据边界和下一步验证方向。",
+                "steps": [case_steps[5]],
+            },
+        ],
+        "steps": case_steps,
+        "evidence": [
+            {"type": "confirmed", "path": "inventory.json", "detail": f"project_types={project_types}"},
+            {"type": "entrypoint hint", "path": "flow_map.json", "detail": f"flows={flow_map['summary']['flow_count']}"},
+            {"type": "confirmed", "path": "script_check.json", "detail": f"checks={script_check['summary']['check_count']}"},
+            {"type": "static dependency", "path": "import_graph.json", "detail": f"internal_edges={import_graph['summary']['internal_edge_count']}"},
+        ],
+    }
+    return guide
+
+
 def _graph(
     inventory: dict[str, Any],
     audit: dict[str, Any],
@@ -471,12 +675,15 @@ def create_pack(
     flow_map = create_flow_map(target_path, max_files=max_files)
     script_check = check_scripts(target_path)
     graph = _graph(inventory, audit, import_graph, flow_map, script_check)
+    guide = _learning_guide(inventory, import_graph, flow_map, script_check, graph)
+    graph["guide"] = guide
 
     write_inventory(inventory, output_root / "inventory.json")
     write_audit(audit, output_root / "vibe_audit.json")
     write_import_graph(import_graph, output_root / "import_graph.json")
     write_flow_map(flow_map, output_root / "flow_map.json")
     write_script_check(script_check, output_root / "script_check.json")
+    _write(output_root / "learning_guide.json", json.dumps(guide, indent=2, ensure_ascii=False))
     _write(output_root / "understanding_graph.json", json.dumps(graph, indent=2, ensure_ascii=False))
 
     today = date.today().isoformat()
@@ -567,7 +774,7 @@ Path:
 
 Side effects: 只写入中央分析包，不写目标项目。
 
-Output: `overview.md`、`architecture.md`、`flows.md`、`diagrams.md`、`open-questions.md`、`inventory.json`、`flow_map.json`、`script_check.json`、`import_graph.json`、`vibe_audit.json`、`understanding_graph.json`。
+Output: `overview.md`、`architecture.md`、`flows.md`、`diagrams.md`、`open-questions.md`、`inventory.json`、`flow_map.json`、`script_check.json`、`import_graph.json`、`vibe_audit.json`、`learning_guide.json`、`understanding_graph.json`。
 """,
     )
 
@@ -627,5 +834,6 @@ flowchart LR
         "flow_map": flow_map,
         "script_check": script_check,
         "audit": audit,
+        "guide": guide,
         "graph": graph,
     }

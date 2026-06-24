@@ -32,15 +32,27 @@ class PackTest(unittest.TestCase):
                 "script_check.json",
                 "import_graph.json",
                 "vibe_audit.json",
+                "learning_guide.json",
                 "understanding_graph.json",
             ]:
                 self.assertTrue((out / name).exists(), name)
 
             graph = json.loads((out / "understanding_graph.json").read_text(encoding="utf-8"))
+            guide = json.loads((out / "learning_guide.json").read_text(encoding="utf-8"))
             self.assertTrue(any(node.get("meaning") for node in graph["nodes"]))
             self.assertTrue(any(node.get("next_read") for node in graph["nodes"]))
             self.assertTrue(any(node.get("signals") for node in graph["nodes"]))
             self.assertTrue(any(flow.get("name") == "推荐阅读路线" for flow in graph["flows"]))
+            self.assertEqual(graph["guide"], guide)
+            self.assertIn("quickstart", guide)
+            self.assertIn("case_study", guide)
+            self.assertIn("chapters", guide)
+            self.assertTrue(guide["steps"])
+            known_nodes = {node["id"] for node in graph["nodes"]}
+            for step in guide["steps"]:
+                self.assertTrue(step.get("path") or step.get("node"))
+                if step.get("node"):
+                    self.assertIn(step["node"], known_nodes)
 
 
 if __name__ == "__main__":

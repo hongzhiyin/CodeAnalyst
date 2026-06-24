@@ -102,6 +102,30 @@
           3,
           4
         ]
+      },
+      {
+        "path": "/Users/chihoyo/Project/CodeAnalyst/docs/changes/2026-06-17-guided-learning-path-v1",
+        "architecture": "present",
+        "decision_ids": [
+          1,
+          2,
+          3
+        ],
+        "roadmap_steps": [
+          "Step 0 - 建立需求工作包",
+          "Step 1 - 澄清需求与范围",
+          "Step 2 - 调研既有实现",
+          "Step 3 - 形成并确认方案",
+          "Step 4 - 实施代码与测试",
+          "Step 5 - 验证与收尾",
+          "Step 6 - Understand Anything 风格返工"
+        ],
+        "invariant_ids": [
+          1,
+          2,
+          3,
+          4
+        ]
       }
     ]
   },

@@ -90,7 +90,7 @@ flowchart TD
 | `script_check.py` | Static verification of declared package scripts, bins, and Python entrypoint targets. |
 | `vibe_audit.py` | Heuristic checks for vibe-coded leftovers and missing verification signals. |
 | `pack.py` | Output-root selection and Markdown/JSON analysis pack generation. |
-| `render_site.py` | Static HTML renderer for `understanding_graph.json`; no external dependencies. |
+| `render_site.py` | Static HTML renderer for `understanding_graph.json`; renders reader-first lesson content when `guide` exists, with graph/search as a later Reference Index; no external dependencies. |
 | `verify_site.py` | Deterministic validation for generated visual sites before browser inspection. |
 | `skill/SKILL.md` | Agent workflow: decide mode, call CLI, explain confirmed facts vs inferences. |
 | `scripts/install_cli.sh` | Source checkout install: create `.venv/bin/code-analyst` and remove known legacy global wrappers. |
@@ -159,6 +159,10 @@ flowchart LR
   ScriptJSON --> Questions[open-questions.md]
   ImportJSON --> Graph[understanding_graph.json]
   AuditJSON --> Questions[open-questions.md]
+  InventoryJSON --> Guide[learning_guide.json]
+  FlowJSON --> Guide
+  ScriptJSON --> Guide
+  ImportJSON --> Guide
   InventoryJSON --> Review[review.md / review_pack.json]
   FlowJSON --> Review
   ScriptJSON --> Review
@@ -167,6 +171,7 @@ flowchart LR
   Markdown --> User[学习与优化建议]
   Review --> User
   Graph --> Site[site/index.html]
+  Guide --> Site
   Site --> SiteVerify[site_verification.json]
 ```
 

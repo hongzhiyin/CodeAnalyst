@@ -45,6 +45,29 @@ LABELS_EN: dict[str, Any] = {
     "noSignals": "No signals listed.",
     "noMetrics": "No metrics listed.",
     "edgeFallback": "relates",
+    "quickstartTitle": "Quickstart",
+    "caseStudyTitle": "Case Study",
+    "chaptersTitle": "Chapters",
+    "learningGoalsTitle": "Learning Goals",
+    "whyThisPathTitle": "Why This Path",
+    "projectTypesTitle": "Project Types",
+    "evidenceTypeTitle": "Evidence",
+    "takeawayTitle": "Takeaway",
+    "viewModule": "View Module",
+    "noGuide": "No guided learning path provided.",
+    "readerModeTitle": "Reader Mode",
+    "studyPathTitle": "Study Path",
+    "mapFirstTitle": "Map-first view",
+    "mapFirstCaption": "Nodes and relations are useful later, but they do not explain where to begin.",
+    "lessonFirstTitle": "Lesson-first view",
+    "lessonFirstCaption": "Start from a real task, follow chapters, then use the graph as a reference.",
+    "referenceIndexTitle": "Reference Index",
+    "referenceIndexIntro": "Use this after the lesson gives you a concrete question or module to inspect.",
+    "moduleIndexTitle": "Module Index",
+    "chaptersNavTitle": "Chapters",
+    "casePathTitle": "Walkthrough",
+    "guidingQuestionTitle": "Guiding Question",
+    "principleTitle": "Principle",
     "kindLabels": {
         "skill": "skill",
         "entrypoint": "entrypoint",
@@ -91,6 +114,29 @@ LABELS_ZH: dict[str, Any] = {
     "noSignals": "暂无证据信号。",
     "noMetrics": "暂无指标。",
     "edgeFallback": "关联",
+    "quickstartTitle": "快速入门",
+    "caseStudyTitle": "案例讲解",
+    "chaptersTitle": "章节路线",
+    "learningGoalsTitle": "学习目标",
+    "whyThisPathTitle": "为什么这样学",
+    "projectTypesTitle": "项目类型",
+    "evidenceTypeTitle": "证据类型",
+    "takeawayTitle": "本步要点",
+    "viewModule": "查看模块",
+    "noGuide": "暂无引导式学习路径。",
+    "readerModeTitle": "阅读模式",
+    "studyPathTitle": "学习路径",
+    "mapFirstTitle": "先看地图",
+    "mapFirstCaption": "节点和关系适合后查，但它们不会告诉你应该从哪里开始。",
+    "lessonFirstTitle": "先读教材",
+    "lessonFirstCaption": "先从一个真实任务进入，按章节推进，再把图谱当作参考索引。",
+    "referenceIndexTitle": "参考索引",
+    "referenceIndexIntro": "当教材让你产生具体问题或想查某个模块时，再回到这里检索和看关系。",
+    "moduleIndexTitle": "模块索引",
+    "chaptersNavTitle": "章节",
+    "casePathTitle": "讲解路径",
+    "guidingQuestionTitle": "本章问题",
+    "principleTitle": "原理",
     "kindLabels": {
         "skill": "技能",
         "entrypoint": "入口",
@@ -156,26 +202,17 @@ HTML_TEMPLATE = """<!doctype html>
       font-size: 16px;
       line-height: 1.55;
     }
-    main {
-      display: grid;
-      grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
-      gap: 18px;
-      padding: 18px clamp(12px, 3vw, 32px) 34px;
-    }
-    aside, section {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-    }
-    aside {
-      position: sticky;
-      top: 18px;
-      align-self: start;
-      max-height: calc(100vh - 36px);
-      overflow: auto;
-      padding: 14px;
-    }
+	    main {
+	      width: min(1180px, calc(100% - 24px));
+	      margin: 0 auto;
+	      padding: 24px 0 42px;
+	    }
+	    aside, section {
+	      min-width: 0;
+	    }
+	    aside {
+	      min-width: 0;
+	    }
     .sr-only {
       position: absolute;
       width: 1px;
@@ -261,15 +298,14 @@ HTML_TEMPLATE = """<!doctype html>
       font-size: 12px;
       overflow-wrap: anywhere;
     }
-    .workspace {
-      display: grid;
-      gap: 18px;
-      min-width: 0;
-    }
-    section {
-      padding: 18px;
-      min-width: 0;
-    }
+	    .workspace {
+	      display: grid;
+	      gap: 24px;
+	      min-width: 0;
+	    }
+	    section {
+	      min-width: 0;
+	    }
     .section-head {
       display: flex;
       align-items: flex-start;
@@ -282,6 +318,271 @@ HTML_TEMPLATE = """<!doctype html>
       font-size: 18px;
       letter-spacing: 0;
     }
+	    .guide-section[hidden] {
+	      display: none;
+	    }
+	    .guide-shell {
+	      display: grid;
+	      gap: 22px;
+	    }
+	    .guide-hero {
+	      display: grid;
+	      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+	      gap: 20px;
+	      align-items: stretch;
+	      background: var(--panel);
+	      border: 1px solid var(--line);
+	      border-radius: 8px;
+	      padding: clamp(18px, 3vw, 28px);
+	      box-shadow: var(--shadow);
+	    }
+	    .guide-hero-copy {
+	      display: grid;
+	      align-content: start;
+	      gap: 12px;
+	    }
+	    .guide-kicker {
+	      color: var(--accent);
+	      font-size: 12px;
+	      font-weight: 750;
+	      text-transform: uppercase;
+	    }
+	    .guide-title {
+	      margin: 0;
+	      font-size: clamp(28px, 4vw, 52px);
+	      line-height: 1.15;
+	      letter-spacing: 0;
+	    }
+	    .problem-compare {
+	      display: grid;
+	      grid-template-columns: 1fr;
+	      gap: 10px;
+	    }
+	    .compare-card {
+	      border: 1px solid var(--soft-line);
+	      border-radius: 8px;
+	      padding: 13px;
+	      background: #fbfcfe;
+	    }
+	    .compare-card strong {
+	      display: block;
+	      margin-bottom: 8px;
+	      font-size: 14px;
+	    }
+	    .compare-card p {
+	      margin: 8px 0 0;
+	      color: var(--muted);
+	      line-height: 1.45;
+	    }
+	    .compare-card--lesson {
+	      border-color: #bfdbfe;
+	      background: #eff6ff;
+	    }
+	    .mini-hairball {
+	      position: relative;
+	      height: 86px;
+	      border: 1px dashed #cbd5e1;
+	      border-radius: 8px;
+	      background:
+	        linear-gradient(35deg, transparent 46%, #cbd5e1 47%, #cbd5e1 48%, transparent 49%),
+	        linear-gradient(145deg, transparent 46%, #cbd5e1 47%, #cbd5e1 48%, transparent 49%),
+	        #fff;
+	      overflow: hidden;
+	    }
+	    .mini-hairball span {
+	      position: absolute;
+	      width: 9px;
+	      height: 9px;
+	      border-radius: 50%;
+	      background: #94a3b8;
+	    }
+	    .mini-hairball span:nth-child(1) { left: 14%; top: 22%; }
+	    .mini-hairball span:nth-child(2) { left: 31%; top: 67%; }
+	    .mini-hairball span:nth-child(3) { left: 52%; top: 34%; }
+	    .mini-hairball span:nth-child(4) { left: 73%; top: 58%; }
+	    .mini-hairball span:nth-child(5) { left: 84%; top: 20%; }
+	    .mini-path {
+	      display: grid;
+	      gap: 8px;
+	      margin: 0;
+	      padding: 0;
+	      list-style: none;
+	    }
+	    .mini-path li {
+	      display: grid;
+	      grid-template-columns: 22px minmax(0, 1fr);
+	      gap: 8px;
+	      align-items: center;
+	      color: var(--ink);
+	      font-size: 13px;
+	    }
+	    .mini-path span {
+	      display: inline-grid;
+	      place-items: center;
+	      width: 22px;
+	      height: 22px;
+	      border-radius: 50%;
+	      background: var(--accent);
+	      color: #fff;
+	      font-size: 11px;
+	      font-weight: 750;
+	    }
+	    .reader-grid {
+	      display: grid;
+	      grid-template-columns: minmax(180px, 230px) minmax(0, 1fr) minmax(240px, 300px);
+	      gap: 18px;
+	      align-items: start;
+	    }
+	    .lesson-nav, .lesson-side, .lesson-card, .context-section, .reference-card {
+	      background: var(--panel);
+	      border: 1px solid var(--line);
+	      border-radius: 8px;
+	      box-shadow: var(--shadow);
+	    }
+	    .lesson-nav, .lesson-side {
+	      position: sticky;
+	      top: 18px;
+	      padding: 14px;
+	    }
+	    .lesson-nav a {
+	      display: block;
+	      margin-top: 10px;
+	      color: var(--ink);
+	      text-decoration: none;
+	      font-size: 13px;
+	      line-height: 1.35;
+	      border-left: 3px solid var(--soft-line);
+	      padding: 5px 0 5px 10px;
+	    }
+	    .lesson-nav a:hover, .lesson-nav a:focus {
+	      border-left-color: var(--accent);
+	      color: var(--accent);
+	      outline: none;
+	    }
+	    .lesson-reader {
+	      display: grid;
+	      gap: 16px;
+	    }
+	    .lesson-card {
+	      padding: 18px;
+	    }
+	    .lesson-card h3, .lesson-side h3 {
+	      margin: 0 0 8px;
+	      font-size: 16px;
+	    }
+    .goal-list, .chapter-list, .lesson-steps {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .goal-list li {
+      padding-left: 12px;
+      border-left: 3px solid var(--accent);
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .lesson-step {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 10px 0;
+      border-top: 1px solid var(--soft-line);
+    }
+    .lesson-step:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+    .lesson-step-body {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+    .lesson-step-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .evidence-tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px 8px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .guide-jump {
+      justify-self: start;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      padding: 6px 9px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .guide-jump:hover, .guide-jump:focus {
+      background: #dbeafe;
+      outline: none;
+    }
+	    .chapter-list li {
+	      border-top: 1px solid var(--soft-line);
+	      padding-top: 10px;
+	    }
+    .chapter-list li:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+	    .chapter-title {
+	      display: block;
+	      color: var(--ink);
+	      font-weight: 750;
+	      margin-bottom: 4px;
+	    }
+	    .context-section {
+	      padding: 18px;
+	    }
+	    .reference-section {
+	      display: grid;
+	      gap: 16px;
+	      padding-top: 8px;
+	    }
+	    .section-intro {
+	      display: grid;
+	      gap: 7px;
+	      max-width: 780px;
+	    }
+	    .reference-layout {
+	      display: grid;
+	      grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+	      gap: 18px;
+	      align-items: start;
+	    }
+	    .module-index {
+	      position: sticky;
+	      top: 18px;
+	      max-height: calc(100vh - 36px);
+	      overflow: auto;
+	      padding: 14px;
+	      background: var(--panel);
+	      border: 1px solid var(--line);
+	      border-radius: 8px;
+	      box-shadow: var(--shadow);
+	    }
+	    .module-index h2 {
+	      margin-bottom: 10px;
+	    }
+	    .reference-stack {
+	      display: grid;
+	      gap: 18px;
+	    }
+	    .reference-card {
+	      padding: 18px;
+	    }
     .legend {
       display: flex;
       flex-wrap: wrap;
@@ -496,20 +797,20 @@ HTML_TEMPLATE = """<!doctype html>
       color: var(--muted);
       line-height: 1.5;
     }
-    @media (max-width: 860px) {
-      main {
-        grid-template-columns: 1fr;
-      }
-      aside {
-        position: static;
-        max-height: none;
-      }
-      .detail-grid {
-        grid-template-columns: 1fr;
-      }
-      .legend {
-        max-width: 100%;
-        justify-content: flex-start;
+	    @media (max-width: 860px) {
+	      .guide-hero, .reader-grid, .reference-layout {
+	        grid-template-columns: 1fr;
+	      }
+	      .lesson-nav, .lesson-side, .module-index {
+	        position: static;
+	        max-height: none;
+	      }
+	      .detail-grid {
+	        grid-template-columns: 1fr;
+	      }
+	      .legend {
+	        max-width: 100%;
+	        justify-content: flex-start;
       }
       .section-head {
         display: grid;
@@ -522,28 +823,43 @@ HTML_TEMPLATE = """<!doctype html>
     <h1>__TITLE__</h1>
     <p>__SUMMARY__</p>
   </header>
-  <main>
-    <aside>
-      <label id="searchLabel" class="sr-only" for="search"></label>
-      <input id="search" class="search" type="search">
-      <div id="stats" class="stats"></div>
-      <div id="nodeList" class="node-list"></div>
-    </aside>
-    <div class="workspace">
-      <section>
-        <div class="section-head">
-          <h2 id="moduleMapTitle"></h2>
-          <div id="legend" class="legend"></div>
-        </div>
-        <div class="graph"><svg id="graph" role="img"></svg></div>
-      </section>
-      <section>
-        <h2 id="selectedModuleTitle"></h2>
-        <div id="details" class="detail-grid"></div>
-      </section>
-      <section>
-        <h2 id="coreFlowsTitle"></h2>
-        <ul id="flows" class="flow-list"></ul>
+	  <main>
+	    <div class="workspace">
+	      <section id="guideSection" class="guide-section" hidden>
+	        <div id="guide"></div>
+	      </section>
+	      <section id="selectedModuleSection" class="context-section">
+	        <h2 id="selectedModuleTitle"></h2>
+	        <div id="details" class="detail-grid"></div>
+	      </section>
+	      <section id="referenceSection" class="reference-section">
+	        <div class="section-intro">
+	          <span class="guide-kicker" id="referenceKicker"></span>
+	          <h2 id="referenceIndexTitle"></h2>
+	          <p id="referenceIntro" class="summary"></p>
+	        </div>
+	        <div class="reference-layout">
+	          <aside class="module-index">
+	            <h2 id="moduleIndexTitle"></h2>
+	            <label id="searchLabel" class="sr-only" for="search"></label>
+	            <input id="search" class="search" type="search">
+	            <div id="stats" class="stats"></div>
+	            <div id="nodeList" class="node-list"></div>
+	          </aside>
+	          <div class="reference-stack">
+	            <div id="moduleMapSection" class="reference-card">
+	              <div class="section-head">
+	                <h2 id="moduleMapTitle"></h2>
+	                <div id="legend" class="legend"></div>
+	              </div>
+	              <div class="graph"><svg id="graph" role="img"></svg></div>
+	            </div>
+	          </div>
+	        </div>
+	      </section>
+	      <section>
+	        <h2 id="coreFlowsTitle"></h2>
+	        <ul id="flows" class="flow-list"></ul>
       </section>
       <section>
         <h2 id="evidenceTitle"></h2>
@@ -563,14 +879,18 @@ HTML_TEMPLATE = """<!doctype html>
     const nodes = Array.isArray(data.nodes) ? data.nodes : [];
     const edges = Array.isArray(data.edges) ? data.edges : [];
     const flows = Array.isArray(data.flows) ? data.flows : [];
-    const evidence = Array.isArray(data.evidence) ? data.evidence : [];
-    const questions = Array.isArray(data.questions) ? data.questions : [];
-    let selectedId = nodes[0]?.id || null;
+	    const evidence = Array.isArray(data.evidence) ? data.evidence : [];
+	    const questions = Array.isArray(data.questions) ? data.questions : [];
+	    const guide = data.guide && typeof data.guide === 'object' ? data.guide : null;
+	    let selectedId = guide?.quickstart?.start_node || nodes[0]?.id || null;
+	    document.body.classList.toggle('has-guide', Boolean(guide));
 
     const nodeList = document.getElementById('nodeList');
     const search = document.getElementById('search');
     const details = document.getElementById('details');
     const svg = document.getElementById('graph');
+    const guideSection = document.getElementById('guideSection');
+    const guideRoot = document.getElementById('guide');
 
     const colorMap = {
       skill: '#0e7490',
@@ -644,10 +964,14 @@ HTML_TEMPLATE = """<!doctype html>
     }
 
     function renderStaticLabels() {
-      document.getElementById('searchLabel').textContent = l('filterModules');
-      search.placeholder = l('filterModules');
-      search.setAttribute('aria-label', l('filterModules'));
-      document.getElementById('moduleMapTitle').textContent = l('moduleMap');
+	      document.getElementById('searchLabel').textContent = l('filterModules');
+	      search.placeholder = l('filterModules');
+	      search.setAttribute('aria-label', l('filterModules'));
+	      document.getElementById('referenceKicker').textContent = l('referenceIndexTitle');
+	      document.getElementById('referenceIndexTitle').textContent = l('referenceIndexTitle');
+	      document.getElementById('referenceIntro').textContent = l('referenceIndexIntro');
+	      document.getElementById('moduleIndexTitle').textContent = l('moduleIndexTitle');
+	      document.getElementById('moduleMapTitle').textContent = l('moduleMap');
       document.getElementById('selectedModuleTitle').textContent = l('selectedModule');
       document.getElementById('coreFlowsTitle').textContent = l('coreFlows');
       document.getElementById('evidenceTitle').textContent = l('evidence');
@@ -704,6 +1028,134 @@ HTML_TEMPLATE = """<!doctype html>
     function renderList(items, emptyText) {
       if (!Array.isArray(items) || !items.length) return `<li class="muted">${esc(emptyText)}</li>`;
       return items.map(item => `<li>${esc(item)}</li>`).join('');
+    }
+
+	    function renderGuideStep(step, index) {
+	      const node = step.node && nodes.some(item => item.id === step.node) ? step.node : '';
+	      return `
+	        <li class="lesson-step">
+          <span class="step-index">${index + 1}</span>
+          <span class="lesson-step-body">
+            <span class="lesson-step-head">
+              <strong>${esc(step.label || l('stepFallback'))}</strong>
+              ${step.evidence_type ? `<span class="evidence-tag">${esc(l('evidenceTypeTitle'))}: ${esc(step.evidence_type)}</span>` : ''}
+            </span>
+            ${step.summary ? `<span class="muted">${esc(step.summary)}</span>` : ''}
+            ${step.takeaway ? `<span class="muted"><strong>${esc(l('takeawayTitle'))}:</strong> ${esc(step.takeaway)}</span>` : ''}
+            ${step.evidence ? `<span class="muted">${esc(step.evidence)}</span>` : ''}
+            ${step.path ? `<code>${esc(step.path)}</code>` : ''}
+            ${node ? `<button type="button" class="guide-jump" data-guide-node="${esc(node)}">${esc(l('viewModule'))}</button>` : ''}
+          </span>
+	        </li>
+	      `;
+	    }
+
+	    function renderChapterCard(chapter, index) {
+	      const steps = Array.isArray(chapter.steps) ? chapter.steps : [];
+	      return `
+	        <article id="lesson-chapter-${index + 1}" class="lesson-card">
+	          <span class="guide-kicker">${esc(l('chaptersNavTitle'))} ${index + 1}</span>
+	          <h3>${esc(chapter.title || `${l('chaptersTitle')} ${index + 1}`)}</h3>
+	          ${chapter.question ? `<p class="summary"><strong>${esc(l('guidingQuestionTitle'))}:</strong> ${esc(chapter.question)}</p>` : ''}
+	          ${chapter.summary ? `<p class="summary">${esc(chapter.summary)}</p>` : ''}
+	          ${chapter.principle ? `<p class="summary"><strong>${esc(l('principleTitle'))}:</strong> ${esc(chapter.principle)}</p>` : ''}
+	          <ol class="lesson-steps">${steps.map((step, stepIndex) => renderGuideStep(step, stepIndex)).join('')}</ol>
+	        </article>
+	      `;
+	    }
+
+	    function renderEvidenceNotes(items) {
+	      if (!Array.isArray(items) || !items.length) {
+	        return `<li class="muted">${esc(l('noEvidence'))}</li>`;
+	      }
+	      return items.map(item => `
+	        <li>
+	          <strong>${esc(item.type || l('evidenceFallback'))}</strong>
+	          ${item.path ? `<code>${esc(item.path)}</code>` : ''}
+	          ${item.detail ? `<span class="muted">${esc(item.detail)}</span>` : ''}
+	        </li>
+	      `).join('');
+	    }
+
+	    function renderGuide() {
+	      if (!guide) {
+	        guideSection.hidden = true;
+	        return;
+      }
+      guideSection.hidden = false;
+      const quickstart = guide.quickstart || {};
+	      const caseStudy = guide.case_study || {};
+	      const goals = Array.isArray(quickstart.learning_goals) ? quickstart.learning_goals : [];
+	      const caseSteps = Array.isArray(caseStudy.steps) ? caseStudy.steps : [];
+	      const chapters = Array.isArray(guide.chapters) ? guide.chapters : [];
+	      const evidenceNotes = Array.isArray(guide.evidence) ? guide.evidence : [];
+	      const previewSteps = caseSteps.slice(0, 4);
+	      guideRoot.innerHTML = `
+	        <div class="guide-shell">
+	          <div class="guide-hero">
+	            <div class="guide-hero-copy">
+	              <span class="guide-kicker">${esc(l('readerModeTitle'))}</span>
+	              <h2 class="guide-title">${esc(quickstart.title || data.title || l('quickstartTitle'))}</h2>
+	              <p class="summary">${esc(quickstart.problem || data.summary || l('noGuide'))}</p>
+	              ${quickstart.why_this_path ? `
+	                <div>
+	                  <strong>${esc(l('whyThisPathTitle'))}</strong>
+	                  <p class="summary">${esc(quickstart.why_this_path)}</p>
+	                </div>
+	              ` : ''}
+	              <div class="pill-row">
+	                ${quickstart.project_types ? `<span class="pill">${esc(l('projectTypesTitle'))}: ${esc(quickstart.project_types)}</span>` : ''}
+	                ${quickstart.start_path ? `<span class="pill">${esc(l('pathLabel'))}: <code>${esc(quickstart.start_path)}</code></span>` : ''}
+	              </div>
+	            </div>
+	            <div class="problem-compare">
+	              <div class="compare-card">
+	                <strong>${esc(l('mapFirstTitle'))}</strong>
+	                <div class="mini-hairball" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+	                <p>${nodes.length} ${esc(l('modules', 'modules'))}. ${edges.length} ${esc(l('relations', 'relations'))}. ${esc(l('mapFirstCaption'))}</p>
+	              </div>
+	              <div class="compare-card compare-card--lesson">
+	                <strong>${esc(l('lessonFirstTitle'))}</strong>
+	                <ol class="mini-path">
+	                  ${previewSteps.map((step, index) => `<li><span>${index + 1}</span>${esc(step.label || l('stepFallback'))}</li>`).join('')}
+	                </ol>
+	                <p>${esc(l('lessonFirstCaption'))}</p>
+	              </div>
+	            </div>
+	          </div>
+	          <div class="reader-grid">
+	            <nav class="lesson-nav" aria-label="${esc(l('studyPathTitle'))}">
+	              <span class="guide-kicker">${esc(l('studyPathTitle'))}</span>
+	              <a href="#lesson-case">${esc(l('caseStudyTitle'))}: ${esc(caseStudy.title || l('casePathTitle'))}</a>
+	              ${chapters.map((chapter, index) => `<a href="#lesson-chapter-${index + 1}">${esc(chapter.title || `${l('chaptersTitle')} ${index + 1}`)}</a>`).join('')}
+	              <a href="#referenceSection">${esc(l('referenceIndexTitle'))}</a>
+	            </nav>
+	            <div class="lesson-reader">
+	              <article id="lesson-case" class="lesson-card">
+	                <span class="guide-kicker">${esc(l('casePathTitle'))}</span>
+	                <h3>${esc(caseStudy.title || l('caseStudyTitle'))}</h3>
+	                ${caseStudy.trigger ? `<p class="summary">${esc(caseStudy.trigger)}</p>` : ''}
+	                ${caseStudy.mental_model ? `<p class="summary">${esc(caseStudy.mental_model)}</p>` : ''}
+	                <ol class="lesson-steps">${caseSteps.map((step, index) => renderGuideStep(step, index)).join('')}</ol>
+	              </article>
+	              ${chapters.map((chapter, index) => renderChapterCard(chapter, index)).join('')}
+	            </div>
+	            <aside class="lesson-side">
+	              <h3>${esc(l('learningGoalsTitle'))}</h3>
+	              <ul class="goal-list">${renderList(goals, l('noGuide'))}</ul>
+	              <h3 style="margin-top:16px">${esc(l('evidenceTypeTitle'))}</h3>
+	              <ul class="goal-list">${renderEvidenceNotes(evidenceNotes)}</ul>
+	            </aside>
+	          </div>
+	        </div>
+	      `;
+      guideRoot.querySelectorAll('[data-guide-node]').forEach(button => {
+        button.addEventListener('click', () => {
+          selectedId = button.getAttribute('data-guide-node');
+          render();
+          document.getElementById('selectedModuleSection')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
     }
 
     function renderMetrics(metrics) {
@@ -1082,6 +1534,7 @@ HTML_TEMPLATE = """<!doctype html>
     }
 
     function render() {
+      renderGuide();
       renderNodeList();
       renderDetails();
       renderGraph();
